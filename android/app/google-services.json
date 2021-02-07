@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "567510935967",
+    "project_id": "budget-c8be7",
+    "storage_bucket": "budget-c8be7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567510935967:android:c17f0dda8da9f8ed32f5aa",
+        "android_client_info": {
+          "package_name": "com.duckpond.budget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567510935967-ar2p6i4ims9og4ed78klch41rmn7021b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmibZ3HWtJEEfk2sOMEJO8BPHh3GIpLqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567510935967-ar2p6i4ims9og4ed78klch41rmn7021b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "567510935967-iem84depq98242j7h2nbr0btvv3vlk0a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.duckpond.budget"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
