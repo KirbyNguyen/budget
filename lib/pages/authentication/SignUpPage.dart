@@ -1,3 +1,4 @@
+import 'package:budget/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:budget/services/AuthenticationServices.dart';
 import 'package:budget/services/Validators.dart';
@@ -78,7 +79,8 @@ class _SignUpFormState extends State<SignUpForm> {
             textCapitalization: TextCapitalization.none,
             autocorrect: false,
             obscureText: true,
-            validator: (value) => validateConfirmPassword(value, inputFields[1]),
+            validator: (value) =>
+                validateConfirmPassword(value, inputFields[1]),
             decoration: InputDecoration(
               icon: Icon(Icons.lock),
               labelText: "Confirm Password",
@@ -90,11 +92,20 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
           RaisedButton(
             child: Text("SIGN UP"),
-            onPressed: () {
-              _auth.registerWithEmailAndPassword(
-                inputFields[0],
-                inputFields[1],
-              );
+            onPressed: () async {
+              if (_signUpKey.currentState.validate()) {
+                dynamic result = await _auth.registerWithEmailAndPassword(
+                    inputFields[0],
+                    inputFields[1]);
+                if (result != null) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                }
+              }
             },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
