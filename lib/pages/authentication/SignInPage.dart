@@ -1,4 +1,4 @@
-import 'package:budget/pages/HomePage.dart';
+import 'package:budget/models/LoadingIcon.dart';
 import 'package:budget/services/AuthenticationServices.dart';
 import 'package:flutter/material.dart';
 import 'package:budget/pages/authentication/SignUpPage.dart';
@@ -56,6 +56,8 @@ class _SignInFormState extends State<SignInForm> {
   final AuthService _auth = AuthService();
   // key for signInForm to do validation
   final _signInKey = GlobalKey<FormState>();
+  // loading
+  bool _loading = false;
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -98,20 +100,13 @@ class _SignInFormState extends State<SignInForm> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
           RaisedButton(
-            child: Text("SIGN In"),
+            child: loadingIcon(_loading, "SIGN IN"),
             onPressed: () async {
               if (_signInKey.currentState.validate()) {
-                dynamic result = await _auth.registerWithEmailAndPassword(
-                    inputFields[0],
-                    inputFields[1]);
-                if (result != null) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
-                }
+                setState(() => _loading = true);
+                dynamic result = await _auth.signInWithEmailAndPassword(
+                    inputFields[0], inputFields[1]);
+                setState(() => _loading = false);
               }
             },
           ),

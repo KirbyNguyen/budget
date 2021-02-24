@@ -1,3 +1,4 @@
+import 'package:budget/services/AuthenticationServices.dart';
 import 'package:flutter/material.dart';
 
 class MenuPage extends StatefulWidget {
@@ -6,11 +7,25 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
+  // Authentication services
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("Menu Page"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text("Menu Page"),
+            RaisedButton(
+              child: Text("Sign Out"),
+              onPressed: () {
+                _auth.signOut();
+              },
+            )
+          ],
+        ),
       ),
     );
   }
