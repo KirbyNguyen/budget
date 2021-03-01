@@ -1,8 +1,8 @@
-import 'package:budget/pages/HomePage.dart';
-import 'package:budget/pages/authentication/SignInPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:budget/pages/HomePage.dart';
+import 'package:budget/pages/authentication/SignInPage.dart';
 
 class AppWrapper extends StatelessWidget {
   @override
@@ -10,10 +10,10 @@ class AppWrapper extends StatelessWidget {
     final user = Provider.of<User>(context);
 
     // return either the Home or Authenticate widget
-    if (user == null) {
-      return AuthWrapper();
-    } else {
+    if (user != null) {
       return HomePage();
+    } else {
+      return AuthWrapper();
     }
   }
 }

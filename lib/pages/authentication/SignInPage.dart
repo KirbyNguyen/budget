@@ -10,18 +10,23 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Container(
+        // Padding for the screen
         padding: EdgeInsets.fromLTRB(
           MediaQuery.of(context).size.width * 0.10,
           MediaQuery.of(context).size.height * 0.10,
           MediaQuery.of(context).size.width * 0.10,
           MediaQuery.of(context).size.height * 0.03,
         ),
+        // Display everything in a column
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            // Sign In Form
             SignInForm(),
+            // Sign Up lines
             Row(
+              // Sentences in a row
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text("Don't have an account? "),
@@ -106,6 +111,13 @@ class _SignInFormState extends State<SignInForm> {
                 setState(() => _loading = true);
                 dynamic result = await _auth.signInWithEmailAndPassword(
                     inputFields[0], inputFields[1]);
+                if (result == null) {
+                  print("ERROR");
+                  print(result);
+                }
+                String uid = result.uid;
+                print("UID in the Sign In Page");
+                print(uid);
                 setState(() => _loading = false);
               }
             },
