@@ -1,5 +1,7 @@
-import 'package:budget/models/CustomUser.dart';
+// import 'package:budget/models/CustomUser.dart';
+import 'package:budget/services/UserDatabaseServices.dart';
 import 'package:budget/services/Validators.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -14,9 +16,19 @@ class _ProfilePageState extends State<ProfilePage> {
   // key for signInForm to do validation
   final _profileKey = GlobalKey<FormState>();
   bool editableFields = false;
-
+  User userData;
+  final UserDatabaseService _userCollection = UserDatabaseService();
   // Input fields
   List<String> inputFields = ["", "", ""];
+
+  void initUserData() async {
+    User user = FirebaseAuth.instance.currentUser;
+
+    setState(() {
+      userData = user;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Input fields
@@ -73,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     icon: Icon(Icons.email),
                     labelText: "Email",
                   ),
-                  enabled: editableFields,
+                  enabled: false,
                   initialValue: initialValue[0],
                   onChanged: (value) {
                     // setState(() => inputFields[0] = value);
@@ -91,10 +103,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 RaisedButton(
                   child: Text("CONFIRM"),
-                  onPressed: () {
-                    print("Email: " + inputFields[0]);
-                    print("First name: " + inputFields[1]);
-                    print("Last name: " + inputFields[2]);
+                  onPressed: () async {
+                    initUserData();
+                    if (inputFields[0] != "") {
+                      await userData.updateEmail(inputFields[0]);
+                    }
+                    await _userCollection.setUser(
+                      userData.uid,
+                      inputFields[0] != "" ? inputFields[0] : initialValue[0],
+                      inputFields[1] != "" ? inputFields[1] : initialValue[1],
+                      inputFields[2] != "" ? inputFields[2] : initialValue[2],
+                    );
+                    // if (result != null) {
+                    Navigator.pop(context);
+                    // }
                   },
                 ),
               ],

@@ -7,7 +7,7 @@ class UserDatabaseService {
       FirebaseFirestore.instance.collection('USERS');
 
   // Setting email, first name, and last name inside the user collection
-  Future setUser(
+  Future<void> setUser(
       String uid, String email, String firstName, String lastName) async {
     try {
       return userCollection
