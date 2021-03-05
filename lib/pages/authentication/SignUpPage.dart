@@ -124,7 +124,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          RaisedButton(
+          ElevatedButton(
             child: loadingIcon(_loading, "SIGN UP"),
             onPressed: () async {
               if (_signUpKey.currentState.validate()) {

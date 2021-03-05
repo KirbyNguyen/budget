@@ -66,7 +66,7 @@ class _MenuPageState extends State<MenuPage> {
                 thickness: 2.0,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              RaisedButton(
+              ElevatedButton(
                 child: Text("Sign Out"),
                 onPressed: () {
                   _auth.signOut();

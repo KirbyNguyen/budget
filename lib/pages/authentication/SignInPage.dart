@@ -104,7 +104,7 @@ class _SignInFormState extends State<SignInForm> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          RaisedButton(
+          ElevatedButton(
             child: loadingIcon(_loading, "SIGN IN"),
             onPressed: () async {
               if (_signInKey.currentState.validate()) {
