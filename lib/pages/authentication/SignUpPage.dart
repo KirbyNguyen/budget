@@ -9,7 +9,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       // Showing the title of the screen
       appBar: AppBar(
         title: Text("Sign Up"),

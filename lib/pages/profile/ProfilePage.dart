@@ -92,16 +92,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     inputFields[0] = value;
                   },
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text("EDIT"),
-                  color: Colors.orange,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.orange),
+                  ),
                   onPressed: () {
                     setState(() {
                       editableFields = !editableFields;
                     });
                   },
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text("CONFIRM"),
                   onPressed: () async {
                     initUserData();
