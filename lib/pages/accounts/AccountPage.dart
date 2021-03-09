@@ -1,3 +1,4 @@
+import 'package:budget/pages/accounts/CreateAccountPage.dart';
 import 'package:flutter/material.dart';
 
 class AccountsPage extends StatefulWidget {
@@ -14,7 +15,15 @@ class _AccountsPageState extends State<AccountsPage> {
       ),
       body: Container(
         child: Center(
-          child: Text("Accounts Screen")
+          child: TextButton(
+            child: Text("Add a new account"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAccountPage()),
+              );
+            },
+          ),
         ),
       ),
     );

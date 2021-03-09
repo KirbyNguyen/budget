@@ -7,11 +7,25 @@ class AccountDatabaseSerivces {
 
   // Setting an account for the user
   Future<void> setAccount(
-      String uid, String name, double balance, String type, String color) async {
+      String uid, String name, double balance, String type, int color) async {
     try {
-      return accountCollection
-          .doc()
-          .set({'uid': uid, 'name': name, 'balance': balance, 'type': type, 'color': color});
+      return accountCollection.doc().set({
+        'uid': uid,
+        'name': name,
+        'balance': balance,
+        'type': type,
+        'color': color
+      });
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
+  // Retrieve accounts belong to the user
+  Future<void> retrieveAccounts() async {
+    try {
+      return null;
     } catch (error) {
       print(error.toString());
       return null;
@@ -19,5 +33,5 @@ class AccountDatabaseSerivces {
   }
 
   // A function to get user information
-  
+
 }
