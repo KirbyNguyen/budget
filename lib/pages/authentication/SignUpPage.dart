@@ -2,16 +2,19 @@ import 'package:budget/models/LoadingIcon.dart';
 import 'package:budget/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:budget/services/AuthenticationServices.dart';
+import 'package:budget/services/UserDatabaseServices.dart';
 import 'package:budget/services/Validators.dart';
 
 class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
+      // Showing the title of the screen
       appBar: AppBar(
         title: Text("Sign Up"),
       ),
+      // Padding the screen
       body: Container(
         padding: EdgeInsets.fromLTRB(
           MediaQuery.of(context).size.width * 0.10,
@@ -19,10 +22,12 @@ class SignUpPage extends StatelessWidget {
           MediaQuery.of(context).size.width * 0.10,
           MediaQuery.of(context).size.height * 0.03,
         ),
+        // Showing the column
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            // Showing the sign in form
             SignUpForm(),
           ],
         ),
@@ -37,9 +42,10 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  List<String> inputFields = ["", "", ""];
+  List<String> inputFields = ["", "", "", "", ""];
   // AuthService for signing in
   final AuthService _auth = AuthService();
+  final UserDatabaseService _userCollection = UserDatabaseService();
   // key for signInForm to do validation
   final _signUpKey = GlobalKey<FormState>();
   // loading
@@ -51,6 +57,29 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
+          // First name field
+          TextFormField(
+            decoration: InputDecoration(
+              icon: Icon(Icons.people),
+              labelText: "First Name",
+            ),
+            onChanged: (value) {
+              setState(() => inputFields[3] = value);
+            },
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+          // Last name field
+          TextFormField(
+            decoration: InputDecoration(
+              icon: Icon(Icons.people),
+              labelText: "Last Name",
+            ),
+            onChanged: (value) {
+              setState(() => inputFields[4] = value);
+            },
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+          // Email field
           TextFormField(
             textCapitalization: TextCapitalization.none,
             autocorrect: false,
@@ -64,6 +93,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+          // Password
           TextFormField(
             textCapitalization: TextCapitalization.none,
             autocorrect: false,
@@ -78,6 +108,7 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+          // Password Confirmation field
           TextFormField(
             textCapitalization: TextCapitalization.none,
             autocorrect: false,
@@ -93,13 +124,30 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          RaisedButton(
+          ElevatedButton(
             child: loadingIcon(_loading, "SIGN UP"),
             onPressed: () async {
               if (_signUpKey.currentState.validate()) {
                 setState(() => _loading = true);
                 dynamic result = await _auth.registerWithEmailAndPassword(
                     inputFields[0], inputFields[1]);
+                if (result == null) {
+                  print("ERROR");
+                  print(result);
+                }
+                await _userCollection.setUser(
+                  result.uid,
+                  inputFields[0],
+                  inputFields[3],
+                  inputFields[4],
+                );
+                // Move to home page
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage(),
+                  ),
+                );
                 setState(() => _loading = false);
               }
             },

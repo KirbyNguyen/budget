@@ -45,6 +45,8 @@ dependencies:
   # Bad-words detector
   bad_words: ^0.2.2
 
+  # Color picker
+  flutter_colorpicker: ^0.3.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

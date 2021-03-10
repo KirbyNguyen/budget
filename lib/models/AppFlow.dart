@@ -25,19 +25,19 @@ class AppFlow {
 final List<AppFlow> appFlows = [
   AppFlow(
     title: 'Home',
-    iconData: Icons.money,
+    iconData: Icons.account_balance,
     page: TransactionPage(),
     navigatorKey: GlobalKey<NavigatorState>(),
   ),
   AppFlow(
     title: 'Budget',
-    iconData: Icons.money,
+    iconData: Icons.assessment,
     page: BudgetPage(),
     navigatorKey: GlobalKey<NavigatorState>(),
   ),
   AppFlow(
     title: 'Menu',
-    iconData: Icons.more,
+    iconData: Icons.settings,
     page: MenuPage(),
     navigatorKey: GlobalKey<NavigatorState>(),
   ),
