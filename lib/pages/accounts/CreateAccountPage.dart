@@ -30,6 +30,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Add a new account"),

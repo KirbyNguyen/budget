@@ -1,3 +1,4 @@
+import 'package:budget/models/Account.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountDatabaseSerivces {
@@ -23,11 +24,26 @@ class AccountDatabaseSerivces {
   }
 
   // Retrieve accounts belong to the user
-  Future<void> retrieveAccounts() async {
+  Future<dynamic> getAccounts(uid) async {
+    List<Account> accountList = [];
     try {
-      return null;
+      QuerySnapshot eventsQuery =
+          await accountCollection.where("uid", isEqualTo: uid).get();
+      eventsQuery.docs.forEach(
+        (document) {
+          Account temp = new Account(
+            balance: document["balance"],
+            color: document["color"],
+            name: document["name"],
+            type: document["type"],
+            uid: document["uid"],
+          );
+          accountList.add(temp);
+        },
+      );
+      return accountList;
     } catch (error) {
-      print(error.toString());
+      print(error);
       return null;
     }
   }

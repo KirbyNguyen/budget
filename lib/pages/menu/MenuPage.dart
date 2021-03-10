@@ -52,13 +52,17 @@ class _MenuPageState extends State<MenuPage> {
                 alignment: Alignment.centerLeft,
                 child: InkWell(
                   child: Text("Accounts"),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AccountsPage(),
-                      ),
-                    );
+                  onTap: () async {
+                    dynamic customUserData =
+                        await _userService.getUser(user.uid);
+                    if (customUserData != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AccountsPage(customUserData),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),
