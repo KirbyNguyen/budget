@@ -101,7 +101,7 @@ class _SignUpFormState extends State<SignUpForm> {
             validator: validatePassword,
             decoration: InputDecoration(
               icon: Icon(Icons.lock),
-              labelText: "Password",
+              labelText: "Password change back",
             ),
             onChanged: (value) {
               setState(() => inputFields[1] = value);
