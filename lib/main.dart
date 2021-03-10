@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: "Budget",
         theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
         home: AppWrapper(),
       ),
     );
