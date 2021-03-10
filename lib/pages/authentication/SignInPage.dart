@@ -39,7 +39,7 @@ class SignInPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text("SIGN UP"),
+                  child: Text("SIGN UP change back"),
                 ),
               ],
             ),
