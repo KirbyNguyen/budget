@@ -115,6 +115,13 @@ class _TransactionPageState extends State<TransactionPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightBlue[900],
+        child: Container(
+          child: Icon(
+            Icons.add,
+            size: 40.0,
+          ),
+        ),
         onPressed: () {
           Navigator.push(
             context,
