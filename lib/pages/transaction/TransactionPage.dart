@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:budget/pages/accounts/AccountPage.dart';
 
 class TransactionPage extends StatefulWidget {
   @override
@@ -94,7 +95,6 @@ class _TransactionPageState extends State<TransactionPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
-        // backgroundColor: Colors.blueGrey[600],
         title: Row(
           children: [
             Expanded(
@@ -113,6 +113,14 @@ class _TransactionPageState extends State<TransactionPage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AccountsPage()),
+          );
+        },
       ),
       body: SafeArea(
         child: ListView.builder(
