@@ -6,12 +6,241 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
+// Build list of items based on their types: date items and purchase items
+// based on chronological order
+// 2 types of ListItem: DateItem(String date) for the date category
+//                      PurchaseItem(String name, Double amount, Color color)
+// also get the sum of all spending this month
+  List<ListItem> items = [
+    DateItem('March 9, 2021'),
+    PurchaseItem(
+        purchaseName: 'Making my first flutter app',
+        amount: 123.00,
+        colorName: Colors.cyan),
+    PurchaseItem(
+        purchaseName: 'No more hello world apps',
+        amount: 53.00,
+        colorName: Colors.amber),
+    DateItem('March 7, 2021'),
+    PurchaseItem(
+        purchaseName: 'Good flutter app',
+        amount: 81.00,
+        colorName: Colors.deepOrange),
+    PurchaseItem(
+        purchaseName: 'Making my first flutter app',
+        amount: 123.00,
+        colorName: Colors.cyan),
+    PurchaseItem(
+        purchaseName: 'No more hello world apps',
+        amount: 53.00,
+        colorName: Colors.amber),
+    DateItem('March 6, 2021'),
+    PurchaseItem(
+        purchaseName: 'Good flutter app',
+        amount: 81.00,
+        colorName: Colors.deepOrange),
+    DateItem('March 3, 2021'),
+    PurchaseItem(
+        purchaseName: 'Making my first flutter app',
+        amount: 123.00,
+        colorName: Colors.cyan),
+    PurchaseItem(
+        purchaseName: 'No more hello world apps',
+        amount: 53.00,
+        colorName: Colors.amber),
+    PurchaseItem(
+        purchaseName: 'Good flutter app',
+        amount: 81.00,
+        colorName: Colors.deepOrange),
+    DateItem('March 2, 2021'),
+    PurchaseItem(
+        purchaseName: 'Making my first flutter app',
+        amount: 123.00,
+        colorName: Colors.cyan),
+    DateItem('March 1, 2021'),
+    PurchaseItem(
+        purchaseName: 'No more hello world apps',
+        amount: 53.00,
+        colorName: Colors.amber),
+    PurchaseItem(
+        purchaseName: 'Good flutter app',
+        amount: 81.00,
+        colorName: Colors.deepOrange),
+  ];
+
+  void getData() async {
+    // simulate network request for a username
+    String username = await Future.delayed(Duration(seconds: 3), () {
+      return ('yoshi');
+    });
+    // simulate network request to get bio of the username
+    String bio = await Future.delayed(Duration(seconds: 2), () {
+      return ('vega, musician & egg collector');
+    });
+    print('$username - $bio');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print('TransactionPage->initState() ran ');
+    // getData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('TransactionPage->build() ran');
+    getData();
     return Scaffold(
-      body: Center(
-        child: Text("Transaction Page"),
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue[900],
+        // backgroundColor: Colors.blueGrey[600],
+        title: Row(
+          children: [
+            Expanded(
+              flex: 8,
+              child: Text(
+                'Month Spending Total',
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Text(
+                '50000000.00',
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            ListItem item = items[index];
+            return item.buildItem(context);
+          },
+        ),
       ),
     );
   }
+}
+
+/// The base class for the different types of items the list can contain.
+abstract class ListItem {
+  /// The title line to show in a list item.
+  Widget buildItem(BuildContext context);
+
+  /// The subtitle line, if any, to show in a list item.
+  // Widget buildSubtitle(BuildContext context);
+}
+
+/// A ListItem that contains data to display a heading.
+class DateItem implements ListItem {
+  final String date;
+
+  DateItem(this.date);
+
+  Widget buildItem(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 1.0,
+            color: Colors.grey[200],
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey[400],
+          ),
+          BoxShadow(
+            color: Colors.grey[200],
+            spreadRadius: -2.0,
+            blurRadius: 2.0,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 6,
+              child: Text(
+                date,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.values[8],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget buildSubtitle(BuildContext context) => null;
+}
+
+/// A ListItem that contains data to display a purchase.
+class PurchaseItem implements ListItem {
+  final String purchaseName;
+  final double amount;
+  Color colorName;
+
+  PurchaseItem({this.purchaseName, this.amount, this.colorName});
+
+  Widget buildItem(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 1.0,
+            color: Colors.grey[500],
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Icon(
+                Icons.circle,
+                size: 15,
+                color: colorName,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 8,
+              child: Text(
+                purchaseName,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Text(
+                amount.toStringAsFixed(2),
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget buildSubtitle(BuildContext context) => Text(body);
 }
