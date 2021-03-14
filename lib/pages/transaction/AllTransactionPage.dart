@@ -1,15 +1,14 @@
-import 'package:budget/pages/transaction/AllTransactionPage.dart';
 import 'package:flutter/material.dart';
-import 'package:budget/pages/accounts/AccountPage.dart';
 import 'list_item.dart';
+import 'package:budget/pages/accounts/AccountPage.dart';
 
-class TransactionPage extends StatefulWidget {
+class AllTransactionPage extends StatefulWidget {
   @override
-  _TransactionPageState createState() => _TransactionPageState();
+  _AllTransactionPageState createState() => _AllTransactionPageState();
 }
 
-class _TransactionPageState extends State<TransactionPage> {
-// Build list of items based on their types: date items and purchase items
+class _AllTransactionPageState extends State<AllTransactionPage> {
+  // Build list of items based on their types: date items and purchase items
 // based on chronological order
 // 2 types of ListItem: DateItem(String date) for the date category
 //                      PurchaseItem(String name, Double amount, Color color)
@@ -17,11 +16,11 @@ class _TransactionPageState extends State<TransactionPage> {
   List<ListItem> items = [
     DateItem('March 9, 2021'),
     PurchaseItem(
-        purchaseName: 'Making my first flutter app',
+        purchaseName: 'All Transaction Page',
         amount: 123.00,
         colorName: Colors.cyan),
     PurchaseItem(
-        purchaseName: 'No more hello world apps',
+        purchaseName: 'There should be no dates here',
         amount: 53.00,
         colorName: Colors.amber),
     DateItem('March 7, 2021'),
@@ -127,7 +126,7 @@ class _TransactionPageState extends State<TransactionPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AllTransactionPage()),
+            MaterialPageRoute(builder: (context) => AccountsPage()),
           );
         },
       ),
