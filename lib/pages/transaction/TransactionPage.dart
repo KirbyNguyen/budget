@@ -1,5 +1,8 @@
+import 'package:budget/services/UserDatabaseServices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:budget/pages/accounts/AccountPage.dart';
+import 'package:provider/provider.dart';
 
 class TransactionPage extends StatefulWidget {
   @override
@@ -81,6 +84,9 @@ class _TransactionPageState extends State<TransactionPage> {
     print('$username - $bio');
   }
 
+  // User services
+  final UserDatabaseService _userService = UserDatabaseService();
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +98,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     print('TransactionPage->build() ran');
     getData();
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -122,11 +129,14 @@ class _TransactionPageState extends State<TransactionPage> {
             size: 40.0,
           ),
         ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AccountsPage()),
-          );
+        onPressed: () async {
+          dynamic customUserData = await _userService.getUser(user.uid);
+          if (customUserData != null)
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AccountsPage(customUserData)),
+            );
         },
       ),
       body: SafeArea(
