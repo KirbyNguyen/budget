@@ -55,7 +55,7 @@ class DateItem implements ListItem {
     );
   }
 
-  Widget buildSubtitle(BuildContext context) => null;
+  // Widget buildSubtitle(BuildContext context) => null;
 }
 
 /// A ListItem that contains data to display a purchase.
@@ -115,5 +115,88 @@ class PurchaseItem implements ListItem {
     );
   }
 
-  Widget buildSubtitle(BuildContext context) => null;
+  // Widget buildSubtitle(BuildContext context) => null;
+}
+
+class DatedPurchaseItem implements ListItem {
+  final String purchaseName;
+  final double amount;
+  Color colorName;
+  final String date;
+
+  DatedPurchaseItem({
+    this.purchaseName,
+    this.amount,
+    this.colorName,
+    this.date,
+  });
+
+  Widget buildItem(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 1.0,
+            color: Colors.grey[500],
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Icon(
+                Icons.circle,
+                size: 15,
+                color: colorName,
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 8,
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    purchaseName,
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 4,
+              child: Text(
+                amount.toStringAsFixed(2),
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.3,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget buildSubtitle(BuildContext context) => Text(date);
 }

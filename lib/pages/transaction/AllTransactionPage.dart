@@ -14,60 +14,96 @@ class _AllTransactionPageState extends State<AllTransactionPage> {
 //                      PurchaseItem(String name, Double amount, Color color)
 // also get the sum of all spending this month
   List<ListItem> items = [
-    DateItem('March 9, 2021'),
-    PurchaseItem(
-        purchaseName: 'All Transaction Page',
-        amount: 123.00,
-        colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'There should be no dates here',
-        amount: 53.00,
-        colorName: Colors.amber),
-    DateItem('March 7, 2021'),
-    PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
-    PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
-    DateItem('March 6, 2021'),
-    PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
-    DateItem('March 3, 2021'),
-    PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
-    DateItem('March 2, 2021'),
-    PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
-    DateItem('March 1, 2021'),
-    PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
+    DatedPurchaseItem(
+      purchaseName: 'All Transaction Page',
+      amount: 123.00,
+      colorName: Colors.cyan,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'There should be no dates here',
+      amount: 53.00,
+      colorName: Colors.amber,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'Good flutter app',
+      amount: 81.00,
+      colorName: Colors.deepOrange,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'All Transaction Page',
+      amount: 123.00,
+      colorName: Colors.cyan,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'There should be no dates here',
+      amount: 53.00,
+      colorName: Colors.amber,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'Good flutter app',
+      amount: 81.00,
+      colorName: Colors.deepOrange,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'All Transaction Page',
+      amount: 123.00,
+      colorName: Colors.cyan,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'There should be no dates here',
+      amount: 53.00,
+      colorName: Colors.amber,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'Good flutter app',
+      amount: 81.00,
+      colorName: Colors.deepOrange,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'All Transaction Page',
+      amount: 123.00,
+      colorName: Colors.cyan,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'There should be no dates here',
+      amount: 53.00,
+      colorName: Colors.amber,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'Good flutter app',
+      amount: 81.00,
+      colorName: Colors.deepOrange,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'All Transaction Page',
+      amount: 123.00,
+      colorName: Colors.cyan,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'There should be no dates here',
+      amount: 53.00,
+      colorName: Colors.amber,
+      date: 'March 9, 2021',
+    ),
+    DatedPurchaseItem(
+      purchaseName: 'Good flutter app',
+      amount: 81.00,
+      colorName: Colors.deepOrange,
+      date: 'March 9, 2021',
+    ),
   ];
 
   void getData() async {
