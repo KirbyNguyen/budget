@@ -1,7 +1,8 @@
-import 'package:budget/pages/transaction/AllTransactionPage.dart';
 import 'package:flutter/material.dart';
-import 'package:budget/pages/accounts/AccountPage.dart';
 import 'list_item.dart';
+import 'NewTransactionPage.dart';
+// import 'package:budget/pages/accounts/AccountPage.dart';
+// import 'package:budget/pages/transaction/AllTransactionPage.dart';
 
 class TransactionPage extends StatefulWidget {
   @override
@@ -127,7 +128,7 @@ class _TransactionPageState extends State<TransactionPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AllTransactionPage()),
+            MaterialPageRoute(builder: (context) => MyCustomForm()),
           );
         },
       ),

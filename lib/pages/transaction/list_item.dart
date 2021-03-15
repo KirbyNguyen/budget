@@ -142,7 +142,8 @@ class DatedPurchaseItem implements ListItem {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+        padding: const EdgeInsets.fromLTRB(
+            15.0, 5.0, 15.0, 5.0), // vertical: 5.0, horizontal: 15.0),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -165,6 +166,7 @@ class DatedPurchaseItem implements ListItem {
                     purchaseName,
                     style: TextStyle(
                       fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   SizedBox(
@@ -174,6 +176,7 @@ class DatedPurchaseItem implements ListItem {
                     date,
                     style: TextStyle(
                       color: Colors.grey[600],
+                      fontSize: 13.0,
                     ),
                     textAlign: TextAlign.left,
                   ),

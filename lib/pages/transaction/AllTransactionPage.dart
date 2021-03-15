@@ -121,7 +121,7 @@ class _AllTransactionPageState extends State<AllTransactionPage> {
   @override
   void initState() {
     super.initState();
-    print('TransactionPage->initState() ran ');
+    print('AllTransactionPage->initState() ran ');
     // getData();
   }
 
