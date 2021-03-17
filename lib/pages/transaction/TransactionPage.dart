@@ -18,58 +18,34 @@ class _TransactionPageState extends State<TransactionPage> {
   List<ListItem> items = [
     DateItem('March 9, 2021'),
     PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
+        purchaseName: 'item 1', amount: 123.00, colorName: Colors.cyan),
     PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
+        purchaseName: 'item 2', amount: 53.00, colorName: Colors.amber),
     DateItem('March 7, 2021'),
     PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
+        purchaseName: 'item 3', amount: 81.00, colorName: Colors.deepOrange),
     PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
+        purchaseName: 'item 4', amount: 123.00, colorName: Colors.cyan),
     PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
+        purchaseName: 'item 5', amount: 53.00, colorName: Colors.amber),
     DateItem('March 6, 2021'),
     PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
+        purchaseName: 'item 6', amount: 81.00, colorName: Colors.deepOrange),
     DateItem('March 3, 2021'),
     PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
+        purchaseName: 'item 7', amount: 123.00, colorName: Colors.cyan),
     PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
+        purchaseName: 'item 8', amount: 53.00, colorName: Colors.amber),
     PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
+        purchaseName: 'item 9', amount: 81.00, colorName: Colors.deepOrange),
     DateItem('March 2, 2021'),
     PurchaseItem(
-        purchaseName: 'Making my first flutter app',
-        amount: 123.00,
-        colorName: Colors.cyan),
+        purchaseName: 'item 10', amount: 123.00, colorName: Colors.cyan),
     DateItem('March 1, 2021'),
     PurchaseItem(
-        purchaseName: 'No more hello world apps',
-        amount: 53.00,
-        colorName: Colors.amber),
+        purchaseName: 'item 11', amount: 53.00, colorName: Colors.amber),
     PurchaseItem(
-        purchaseName: 'Good flutter app',
-        amount: 81.00,
-        colorName: Colors.deepOrange),
+        purchaseName: 'item 12', amount: 81.00, colorName: Colors.deepOrange),
   ];
 
   void getData() async {
@@ -103,14 +79,14 @@ class _TransactionPageState extends State<TransactionPage> {
             Expanded(
               flex: 8,
               child: Text(
-                'Month Spending Total',
+                'Period Spending Total',
                 textAlign: TextAlign.left,
               ),
             ),
             Expanded(
               flex: 5,
               child: Text(
-                '50000000.00',
+                '12345.67',
                 textAlign: TextAlign.right,
               ),
             ),
