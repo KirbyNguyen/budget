@@ -1,8 +1,8 @@
-import 'package:budget/pages/transaction/CreateTransactionPage.dart';
-import 'package:budget/services/UserDatabaseServices.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'list_item.dart';
+import 'NewTransactionPage.dart';
+// import 'package:budget/pages/accounts/AccountPage.dart';
+// import 'package:budget/pages/transaction/AllTransactionPage.dart';
 
 class TransactionPage extends StatefulWidget {
   @override
@@ -84,9 +84,6 @@ class _TransactionPageState extends State<TransactionPage> {
     print('$username - $bio');
   }
 
-  // User services
-  final UserDatabaseService _userService = UserDatabaseService();
-
   @override
   void initState() {
     super.initState();
@@ -98,7 +95,6 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     print('TransactionPage->build() ran');
     getData();
-    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -129,14 +125,11 @@ class _TransactionPageState extends State<TransactionPage> {
             size: 40.0,
           ),
         ),
-        onPressed: () async {
-          dynamic customUserData = await _userService.getUser(user.uid);
-          if (customUserData != null)
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CreateTransaction()),
-            );
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyCustomForm()),
+          );
         },
       ),
       body: SafeArea(
@@ -150,122 +143,4 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
     );
   }
-}
-
-/// The base class for the different types of items the list can contain.
-abstract class ListItem {
-  /// The title line to show in a list item.
-  Widget buildItem(BuildContext context);
-
-  /// The subtitle line, if any, to show in a list item.
-  // Widget buildSubtitle(BuildContext context);
-}
-
-/// A ListItem that contains data to display a heading.
-class DateItem implements ListItem {
-  final String date;
-
-  DateItem(this.date);
-
-  Widget buildItem(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1.0,
-            color: Colors.grey[200],
-          ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey[400],
-          ),
-          BoxShadow(
-            color: Colors.grey[200],
-            spreadRadius: -2.0,
-            blurRadius: 2.0,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 6,
-              child: Text(
-                date,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.values[8],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Widget buildSubtitle(BuildContext context) => null;
-}
-
-/// A ListItem that contains data to display a purchase.
-class PurchaseItem implements ListItem {
-  final String purchaseName;
-  final double amount;
-  Color colorName;
-
-  PurchaseItem({this.purchaseName, this.amount, this.colorName});
-
-  Widget buildItem(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 1.0,
-            color: Colors.grey[500],
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Icon(
-                Icons.circle,
-                size: 15,
-                color: colorName,
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              flex: 8,
-              child: Text(
-                purchaseName,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Text(
-                amount.toStringAsFixed(2),
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Widget buildSubtitle(BuildContext context) => Text(body);
 }
