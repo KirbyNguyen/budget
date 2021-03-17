@@ -1,7 +1,7 @@
+import 'package:budget/pages/transaction/CreateTransactionPage.dart';
 import 'package:budget/services/UserDatabaseServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:budget/pages/accounts/AccountPage.dart';
 import 'package:provider/provider.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -135,7 +135,7 @@ class _TransactionPageState extends State<TransactionPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AccountsPage(customUserData)),
+                  builder: (context) => CreateTransaction()),
             );
         },
       ),
