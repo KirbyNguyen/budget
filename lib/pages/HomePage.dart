@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           // Colors changed based on choice
           currentIndex: _currentBarIndex,
+          type: BottomNavigationBarType.fixed,
           // Mapp the pages to the bottom bar
           items: appFlows
               .map(

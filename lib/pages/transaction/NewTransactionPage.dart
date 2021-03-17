@@ -18,7 +18,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   TransactionDatabaseServices _transaction = TransactionDatabaseServices();
   String purchase;
   double amount;
-  DateTime datetime;
+  // DateTime datetime;
   int currentCategory = 0;
   Map<int, List> categories = {
     0: ['Groceries', Colors.red],
@@ -49,7 +49,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           currentCategory = newValue;
         });
       },
-      items: <int>[0, 1, 2, 3].map<DropdownMenuItem<int>>((int value) {
+      items: categories.keys.toList().map<DropdownMenuItem<int>>((int value) {
         return DropdownMenuItem<int>(
           value: value,
           child: Row(
@@ -212,19 +212,23 @@ class MyCustomFormState extends State<MyCustomForm> {
         title: Row(
           children: [
             Expanded(
-              flex: 8,
+              flex: 16,
               child: Text(
-                'Month Spending Total',
-                textAlign: TextAlign.left,
+                'Add New Transaction',
+                textAlign: TextAlign.center,
               ),
             ),
             Expanded(
-              flex: 5,
-              child: Text(
-                '50000000.00',
-                textAlign: TextAlign.right,
-              ),
-            ),
+              flex: 3,
+              child: Container(),
+            )
+            // Expanded(
+            //   flex: 5,
+            //   child: Text(
+            //     '50000000.00',
+            //     textAlign: TextAlign.right,
+            //   ),
+            // ),
           ],
         ),
       ),
