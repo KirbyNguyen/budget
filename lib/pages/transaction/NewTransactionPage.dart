@@ -107,14 +107,14 @@ class MyCustomFormState extends State<MyCustomForm> {
         lastDate: DateTime(2040),
         builder: (BuildContext context, Widget child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
-                surface: Colors.blueGrey,
-                onSurface: Colors.yellow,
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Colors.lightBlue[900],
+                onPrimary: Colors.lightBlue[400],
+                surface: Colors.red,
+                onSurface: Colors.lightBlue[900],
               ),
-              dialogBackgroundColor: Colors.blue[500],
+              dialogBackgroundColor: Colors.white,
             ),
             child: child,
           );
