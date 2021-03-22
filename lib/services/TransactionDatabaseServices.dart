@@ -12,12 +12,13 @@ class TransactionDatabaseServices {
       FirebaseFirestore.instance.collection('TRANSACTIONS');
 
   // Setting an account for the user
-  Future<void> setTransaction(String uid, String categoryName, double amount,
+  Future<void> setTransaction(String uid, String accountid, String categoryName, double amount,
       DateTime date, TimeOfDay time) async {
     DateTime dateTime = date.applied(time);
     try {
       return transactionCollection.doc().set({
         'uid': uid,
+        'accountid': accountid,
         'categoryName': categoryName,
         'amount': amount,
         'datetime': dateTime,

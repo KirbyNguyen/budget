@@ -1,6 +1,9 @@
+import 'package:budget/models/Account.dart';
+import 'package:budget/services/AccountDatabaseServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -194,10 +197,84 @@ class MyCustomFormState extends State<MyCustomForm> {
           affinity: TextAffinity.upstream));
   }
 
+  // Retrieving account information
+  final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  Account currentAccount;
+  List<Account> _accountList;
+
+  Future<List<Account>> getAccounts() async {
+    User user = auth.currentUser;
+    dynamic result = await _accountService.getAccounts(user.uid);
+    setState(() {
+      _accountList = result;
+    });
+    return result;
+  }
+
+  Container accountDropdown() {
+    // DropdownButton<int> dropdown() {
+    DropdownButton<Account> button = DropdownButton<Account>(
+      isExpanded: true,
+      value: currentAccount,
+      icon: const Icon(Icons.arrow_drop_down),
+      iconSize: 24,
+      elevation: 16,
+      style: const TextStyle(
+        // color: Colors.red,
+        // color: Colors.deepPurple,
+        color: Colors.black,
+      ),
+      underline: SizedBox(), //(
+      //   height: 1,
+      //   color: Colors.grey[400],
+      // ),
+      onChanged: (Account newValue) {
+        setState(() {
+          currentAccount = newValue;
+        });
+      },
+      items:
+          _accountList.toList().map<DropdownMenuItem<Account>>((Account value) {
+        return DropdownMenuItem<Account>(
+          value: value,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 19.0,
+              ),
+              Icon(
+                Icons.circle,
+                size: 15.0,
+                color: Color(value.color),
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text(value.name),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+    Container c = Container(
+        child: button,
+        height: 50.0,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey[500],
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ));
+    return c;
+  }
+
   @override
   void initState() {
     super.initState();
     setupDatetime();
+    SchedulerBinding.instance.addPostFrameCallback((_) => getAccounts());
     print('NewTransactionPage->initState() ran ');
   }
 
@@ -254,6 +331,20 @@ class MyCustomFormState extends State<MyCustomForm> {
                         Expanded(
                           flex: 7,
                           child: dropdown(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 16.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 7,
+                          child: accountDropdown(),
                         ),
                       ],
                     ),
@@ -378,10 +469,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                               print(_selectedDate.toString());
                               await _transaction.setTransaction(
                                   user.uid,
+                                  currentAccount.id,
                                   categories[currentCategory][0],
                                   amount,
                                   _selectedDate,
                                   _time);
+                              await _accountService.editAccount(
+                                  currentAccount.id, amount);
                               Navigator.pop(context);
                             }
                           },
