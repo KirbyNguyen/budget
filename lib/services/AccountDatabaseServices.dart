@@ -23,6 +23,33 @@ class AccountDatabaseSerivces {
     }
   }
 
+  // Edit an account
+  Future<void> editAccount(String id, double transaction) async {
+    Account account;
+    try {
+      DocumentSnapshot document = await accountCollection.doc(id).get();
+      account = Account(
+        balance: document["balance"],
+        color: document["color"],
+        name: document["name"],
+        type: document["type"],
+        uid: document["uid"],
+        id: document.id,
+      );
+      await accountCollection.doc(id).set({
+        'uid': account.uid,
+        'name': account.name,
+        'balance': account.balance - transaction,
+        'type': account.type,
+        'color': account.color
+      });
+      return account;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   // Retrieve accounts belong to the user
   Future<dynamic> getAccounts(uid) async {
     List<Account> accountList = [];
@@ -37,6 +64,7 @@ class AccountDatabaseSerivces {
             name: document["name"],
             type: document["type"],
             uid: document["uid"],
+            id: document.id,
           );
           accountList.add(temp);
         },

@@ -1,6 +1,11 @@
+import 'package:budget/models/Account.dart';
+import 'package:budget/models/Transaction.dart';
+import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/TransactionDatabaseServices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'list_item.dart';
 import 'NewTransactionPage.dart';
+// import 'list_item.dart';
 // import 'package:budget/pages/accounts/AccountPage.dart';
 // import 'package:budget/pages/transaction/AllTransactionPage.dart';
 
@@ -15,54 +20,50 @@ class _TransactionPageState extends State<TransactionPage> {
 // 2 types of ListItem: DateItem(String date) for the date category
 //                      PurchaseItem(String name, Double amount, Color color)
 // also get the sum of all spending this month
-  List<ListItem> items = [
-    DateItem('March 9, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 1', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 2', amount: 53.00, colorName: Colors.amber),
-    DateItem('March 7, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 3', amount: 81.00, colorName: Colors.deepOrange),
-    PurchaseItem(
-        purchaseName: 'item 4', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 5', amount: 53.00, colorName: Colors.amber),
-    DateItem('March 6, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 6', amount: 81.00, colorName: Colors.deepOrange),
-    DateItem('March 3, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 7', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 8', amount: 53.00, colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'item 9', amount: 81.00, colorName: Colors.deepOrange),
-    DateItem('March 2, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 10', amount: 123.00, colorName: Colors.cyan),
-    DateItem('March 1, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 11', amount: 53.00, colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'item 12', amount: 81.00, colorName: Colors.deepOrange),
-  ];
+  List<UserTransaction> transactionList = [];
+  // Authentication service
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  // Transaction information
+  final TransactionDatabaseServices _transactionService =
+      TransactionDatabaseServices();
+  // Account service
+  final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  Map<String, Account> accounts = {};
+  Map<String, Color> categories = {
+    'Groceries': Colors.red,
+    'Gas': Colors.purple,
+    'Work Lunches': Colors.blue,
+    'Take Outs': Colors.yellow,
+  };
 
+  // Get transaction data and put them in the list
   void getData() async {
-    // simulate network request for a username
-    String username = await Future.delayed(Duration(seconds: 3), () {
-      return ('yoshi');
-    });
-    // simulate network request to get bio of the username
-    String bio = await Future.delayed(Duration(seconds: 2), () {
-      return ('vega, musician & egg collector');
-    });
-    print('$username - $bio');
+    User user = auth.currentUser;
+
+    // Get transaction
+    dynamic resultAccount = await _accountService.getAccounts(user.uid);
+    if (resultAccount != null) {
+      setState(() {
+        for (int i = 0; i < resultAccount.length; i++) {
+          accounts[resultAccount[i].id] = resultAccount[i];
+        }
+      });
+    }
+
+    // Get account
+    dynamic resultTransaction =
+        await _transactionService.getTransactions(user.uid);
+    if (resultTransaction != null) {
+      setState(() {
+        transactionList = resultTransaction;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    getData();
     print('TransactionPage->initState() ran ');
     // getData();
   }
@@ -70,7 +71,6 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     print('TransactionPage->build() ran');
-    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -110,10 +110,34 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
       body: SafeArea(
         child: ListView.builder(
-          itemCount: items.length,
+          itemCount: transactionList.length,
           itemBuilder: (context, index) {
-            ListItem item = items[index];
-            return item.buildItem(context);
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color:
+                      Color(accounts[transactionList[index].accountid].color),
+                  width: 5.0,
+                ),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              margin: EdgeInsets.all(15.0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 5.0),
+                  Text(transactionList[index].date.toString()),
+                  SizedBox(height: 5.0),
+                  Text(
+                    transactionList[index].category,
+                    style: TextStyle(
+                        color: categories[transactionList[index].category]),
+                  ),
+                  SizedBox(height: 5.0),
+                  Text(transactionList[index].amount.toString()),
+                  SizedBox(height: 5.0),
+                ],
+              ),
+            );
           },
         ),
       ),
