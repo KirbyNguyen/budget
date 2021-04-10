@@ -86,4 +86,14 @@ class TransactionDatabaseServices {
       return null;
     }
   }
+
+  // Delete transaction
+  Future<dynamic> deleteTransaction(String id) async {
+    try {
+      await transactionCollection.doc(id).delete();
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
 }
