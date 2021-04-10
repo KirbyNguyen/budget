@@ -1,4 +1,5 @@
 import 'package:budget/models/Transaction.dart';
+import 'package:budget/pages/transaction/NewTransactionPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -13,13 +14,15 @@ class TransactionDatabaseServices {
       FirebaseFirestore.instance.collection('TRANSACTIONS');
 
   // Setting an account for the user
-  Future<void> setTransaction(String uid, String accountid, String categoryName,
+  Future<void> setTransaction(String uid, String accountid, Type type,
+      String categoryName,
       double amount, DateTime date, TimeOfDay time) async {
     DateTime dateTime = date.applied(time);
     try {
       return transactionCollection.doc().set({
         'uid': uid,
         'accountid': accountid,
+        'type': type,
         'categoryName': categoryName,
         'amount': amount,
         'datetime': dateTime,

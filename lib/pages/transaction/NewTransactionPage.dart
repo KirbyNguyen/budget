@@ -15,6 +15,8 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
+enum Type { expense, income }
+
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
@@ -105,6 +107,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   DateTime _selectedDate;
   TextEditingController _dateEditingController;
   TextEditingController _timeEditingController;
+  Type _type = Type.expense;
 
   _selectDate(BuildContext context) async {
     DateTime newSelectedDate = await showDatePicker(
@@ -318,9 +321,52 @@ class MyCustomFormState extends State<MyCustomForm> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Radio<Type>(
+                                value: Type.expense,
+                                groupValue: _type,
+                                onChanged: (Type value) {
+                                  setState(() {
+                                    _type = value;
+                                  });
+                                },
+                              ),
+                              Text("Expense")
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Radio<Type>(
+                                value: Type.income,
+                                groupValue: _type,
+                                onChanged: (Type value) {
+                                  setState(() {
+                                    _type = value;
+                                  });
+                                },
+                              ),
+                              Text("Income")
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 10.0,
@@ -470,12 +516,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                               await _transaction.setTransaction(
                                   user.uid,
                                   currentAccount.id,
+                                  _type,
                                   categories[currentCategory][0],
                                   amount,
                                   _selectedDate,
                                   _time);
                               await _accountService.editAccount(
-                                  currentAccount.id, amount);
+                                  currentAccount.id, amount, _type);
                               Navigator.pop(context);
                             }
                           },

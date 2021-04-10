@@ -1,4 +1,5 @@
 import 'package:budget/models/Account.dart';
+import 'package:budget/pages/transaction/NewTransactionPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AccountDatabaseSerivces {
@@ -24,7 +25,7 @@ class AccountDatabaseSerivces {
   }
 
   // Edit an account
-  Future<void> editAccount(String id, double transaction) async {
+  Future<void> editAccount(String id, double transaction, Type type) async {
     Account account;
     try {
       DocumentSnapshot document = await accountCollection.doc(id).get();
@@ -39,7 +40,9 @@ class AccountDatabaseSerivces {
       await accountCollection.doc(id).set({
         'uid': account.uid,
         'name': account.name,
-        'balance': account.balance - transaction,
+        'balance': type == Type.expense
+            ? account.balance - transaction
+            : account.balance + transaction,
         'type': account.type,
         'color': account.color
       });
