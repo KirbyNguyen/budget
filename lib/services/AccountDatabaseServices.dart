@@ -25,7 +25,8 @@ class AccountDatabaseSerivces {
   }
 
   // Edit an account
-  Future<void> editAccount(String id, double transaction, Type type) async {
+  Future<void> editAccount(
+      String id, double transaction, TransactionType type) async {
     Account account;
     try {
       DocumentSnapshot document = await accountCollection.doc(id).get();
@@ -40,7 +41,7 @@ class AccountDatabaseSerivces {
       await accountCollection.doc(id).set({
         'uid': account.uid,
         'name': account.name,
-        'balance': type == Type.expense
+        'balance': type == TransactionType.expense
             ? account.balance - transaction
             : account.balance + transaction,
         'type': account.type,

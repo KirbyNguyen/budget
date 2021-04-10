@@ -15,7 +15,7 @@ class MyCustomForm extends StatefulWidget {
   }
 }
 
-enum Type { expense, income }
+enum TransactionType { expense, income }
 
 // Create a corresponding State class.
 // This class holds data related to the form.
@@ -107,7 +107,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   DateTime _selectedDate;
   TextEditingController _dateEditingController;
   TextEditingController _timeEditingController;
-  Type _type = Type.expense;
+  TransactionType _type = TransactionType.expense;
 
   _selectDate(BuildContext context) async {
     DateTime newSelectedDate = await showDatePicker(
@@ -332,10 +332,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                         child: Container(
                           child: Row(
                             children: <Widget>[
-                              Radio<Type>(
-                                value: Type.expense,
+                              Radio<TransactionType>(
+                                value: TransactionType.expense,
                                 groupValue: _type,
-                                onChanged: (Type value) {
+                                onChanged: (TransactionType value) {
                                   setState(() {
                                     _type = value;
                                   });
@@ -351,10 +351,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                         child: Container(
                           child: Row(
                             children: <Widget>[
-                              Radio<Type>(
-                                value: Type.income,
+                              Radio<TransactionType>(
+                                value: TransactionType.income,
                                 groupValue: _type,
-                                onChanged: (Type value) {
+                                onChanged: (TransactionType value) {
                                   setState(() {
                                     _type = value;
                                   });
