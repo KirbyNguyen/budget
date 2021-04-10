@@ -37,6 +37,8 @@ class _TransactionPageState extends State<TransactionPage> {
     'Take Outs': Colors.yellow,
   };
 
+  double _totalSpending = 0;
+
   // Get transaction data and put them in the list
   void getData() async {
     User user = auth.currentUser;
@@ -57,6 +59,10 @@ class _TransactionPageState extends State<TransactionPage> {
     if (resultTransaction != null) {
       setState(() {
         transactionList = resultTransaction;
+        for (int i = 0; i < transactionList.length; i++) {
+          _totalSpending +=
+              transactionList[i].type == 0 ? transactionList[i].amount : 0;
+        }
       });
     }
   }
@@ -87,7 +93,7 @@ class _TransactionPageState extends State<TransactionPage> {
             Expanded(
               flex: 5,
               child: Text(
-                '12345.67',
+                _totalSpending.toString(),
                 textAlign: TextAlign.right,
               ),
             ),
