@@ -59,10 +59,6 @@ class _TransactionPageState extends State<TransactionPage> {
     if (resultTransaction != null) {
       setState(() {
         transactionList = resultTransaction;
-        for (int i = 0; i < transactionList.length; i++) {
-          _totalSpending +=
-              transactionList[i].type == 0 ? transactionList[i].amount : 0;
-        }
       });
     }
   }
@@ -71,13 +67,19 @@ class _TransactionPageState extends State<TransactionPage> {
   void initState() {
     super.initState();
     getData();
+    setState(() {
+      for (int i = 0; i < transactionList.length; i++) {
+        _totalSpending +=
+            transactionList[i].type == 0 ? transactionList[i].amount : 0;
+      }
+    });
     print('TransactionPage->initState() ran ');
     // getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('TransactionPage->build() ran');
+    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
