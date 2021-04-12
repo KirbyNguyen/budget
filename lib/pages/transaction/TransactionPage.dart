@@ -48,29 +48,15 @@ class _TransactionPageState extends State<TransactionPage> {
         purchaseName: 'item 12', amount: 81.00, colorName: Colors.deepOrange),
   ];
 
-  void getData() async {
-    // simulate network request for a username
-    String username = await Future.delayed(Duration(seconds: 3), () {
-      return ('yoshi');
-    });
-    // simulate network request to get bio of the username
-    String bio = await Future.delayed(Duration(seconds: 2), () {
-      return ('vega, musician & egg collector');
-    });
-    print('$username - $bio');
-  }
-
   @override
   void initState() {
     super.initState();
     print('TransactionPage->initState() ran ');
-    // getData();
   }
 
   @override
   Widget build(BuildContext context) {
     print('TransactionPage->build() ran');
-    getData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
