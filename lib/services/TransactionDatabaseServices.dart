@@ -23,6 +23,7 @@ class TransactionDatabaseServices {
       DateTime date,
       TimeOfDay time) async {
     DateTime dateTime = date.applied(time);
+
     try {
       return transactionCollection.doc().set({
         'uid': uid,
