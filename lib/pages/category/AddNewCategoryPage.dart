@@ -1,3 +1,4 @@
+import 'package:budget/services/CategoryServices.dart';
 import 'package:flutter/material.dart';
 // import '../transaction/list_item.dart';
 
@@ -7,6 +8,10 @@ class AddNewCategoryPage extends StatefulWidget {
 }
 
 class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
+  CategoryServices _category = CategoryServices();
+  String catName;
+  int catBudget = 0;
+  Color catColor;
   final _formKey = GlobalKey<FormState>();
   final List<Color> _defaultColors = [
     Colors.red,
@@ -60,6 +65,7 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                     ),
                     onPressed: () {
                       Navigator.pop(context, color);
+                      catColor = color;
                     },
                   ),
                 )
@@ -301,14 +307,12 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                               // If the form is valid, display a Snackbar.
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Processing Data')));
-                              // print(_selectedDate.toString());
-                              // await _transaction.setTransaction(
-                              //     user.uid,
-                              //     categories[currentCategory][0],
+                              await _category.addCategory(
+                                  catName, catBudget, catColor);
                               //     amount,
                               //     _selectedDate,
                               //     _time);
-                              // Navigator.pop(context);
+                              Navigator.pop(context);
                             }
                           },
                           child: Text('Submit'),
