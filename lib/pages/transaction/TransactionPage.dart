@@ -1,6 +1,13 @@
+import 'package:budget/models/Account.dart';
+import 'package:budget/models/Transaction.dart';
+// import 'package:budget/pages/transaction/TransactionDetailPage.dart';
+import 'package:budget/pages/transaction/list_item.dart';
+import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/TransactionDatabaseServices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'list_item.dart';
 import 'NewTransactionPage.dart';
+// import 'list_item.dart';
 // import 'package:budget/pages/accounts/AccountPage.dart';
 // import 'package:budget/pages/transaction/AllTransactionPage.dart';
 
@@ -15,62 +22,84 @@ class _TransactionPageState extends State<TransactionPage> {
 // 2 types of ListItem: DateItem(String date) for the date category
 //                      PurchaseItem(String name, Double amount, Color color)
 // also get the sum of all spending this month
-  List<ListItem> items = [
-    DateItem('March 9, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 1', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 2', amount: 53.00, colorName: Colors.amber),
-    DateItem('March 7, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 3', amount: 81.00, colorName: Colors.deepOrange),
-    PurchaseItem(
-        purchaseName: 'item 4', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 5', amount: 53.00, colorName: Colors.amber),
-    DateItem('March 6, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 6', amount: 81.00, colorName: Colors.deepOrange),
-    DateItem('March 3, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 7', amount: 123.00, colorName: Colors.cyan),
-    PurchaseItem(
-        purchaseName: 'item 8', amount: 53.00, colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'item 9', amount: 81.00, colorName: Colors.deepOrange),
-    DateItem('March 2, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 10', amount: 123.00, colorName: Colors.cyan),
-    DateItem('March 1, 2021'),
-    PurchaseItem(
-        purchaseName: 'item 11', amount: 53.00, colorName: Colors.amber),
-    PurchaseItem(
-        purchaseName: 'item 12', amount: 81.00, colorName: Colors.deepOrange),
-  ];
+  List<UserTransaction> transactionList = [];
+  // Authentication service
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  // Transaction information
+  final TransactionDatabaseServices _transactionService =
+      TransactionDatabaseServices();
+  // Account service
+  final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  Map<String, Account> accounts = {};
+  Map<String, Color> categories = {
+    'Groceries': Colors.red,
+    'Gas': Colors.purple,
+    'Work Lunches': Colors.blue,
+    'Take Outs': Colors.yellow,
+  };
 
+  double _totalSpending = 0;
+
+  // Get transaction data and put them in the list
   void getData() async {
-    // simulate network request for a username
-    String username = await Future.delayed(Duration(seconds: 3), () {
-      return ('yoshi');
-    });
-    // simulate network request to get bio of the username
-    String bio = await Future.delayed(Duration(seconds: 2), () {
-      return ('vega, musician & egg collector');
-    });
-    print('$username - $bio');
+    User user = auth.currentUser;
+
+    // Get transaction
+    dynamic resultAccount = await _accountService.getAccounts(user.uid);
+    if (resultAccount != null) {
+      setState(() {
+        for (int i = 0; i < resultAccount.length; i++) {
+          accounts[resultAccount[i].id] = resultAccount[i];
+        }
+      });
+    }
+
+    // Get account
+    dynamic resultTransaction =
+        await _transactionService.getTransactions(user.uid);
+    if (resultTransaction != null) {
+      setState(() {
+        transactionList = resultTransaction;
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    getData();
+    setState(() {
+      for (int i = 0; i < transactionList.length; i++) {
+        _totalSpending +=
+            transactionList[i].type == 0 ? transactionList[i].amount : 0;
+      }
+    });
     print('TransactionPage->initState() ran ');
-    // getData();
+  }
+
+  void sortTransactionList() {
+    transactionList.sort((a, b) => b.date.compareTo(a.date));
+  }
+
+  List<ListItem> items = [];
+  List<ListItem> populateItems() {
+    return transactionList.map((transaction) {
+      return DetailedItem(
+        // need to save purchase name to DB to get it out
+        categoryName: transaction.category,
+        amount: transaction.amount,
+        catColor: categories[transaction.category],
+        date: transaction.date,
+        id: transaction.id,
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('TransactionPage->build() ran');
     getData();
+    sortTransactionList();
+    items = populateItems();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -86,7 +115,7 @@ class _TransactionPageState extends State<TransactionPage> {
             Expanded(
               flex: 5,
               child: Text(
-                '12345.67',
+                _totalSpending.toString(),
                 textAlign: TextAlign.right,
               ),
             ),
@@ -112,8 +141,61 @@ class _TransactionPageState extends State<TransactionPage> {
         child: ListView.builder(
           itemCount: items.length,
           itemBuilder: (context, index) {
-            ListItem item = items[index];
-            return item.buildItem(context);
+            return items[index].buildItem(context);
+            // return GestureDetector(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => TransactionDetailPage(
+            //           transactionId: transactionList[index].id,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       border: Border.all(
+            //         color:
+            //             Color(accounts[transactionList[index].accountid].color),
+            //         width: 5.0,
+            //       ),
+            //       borderRadius: BorderRadius.circular(30),
+            //     ),
+            //     margin: EdgeInsets.all(15.0),
+            //     child: Column(
+            //       children: <Widget>[
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           transactionList[index].date.toString().substring(0, 16),
+            //           style: TextStyle(
+            //             fontSize: 18.0,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           transactionList[index].category,
+            //           style: TextStyle(
+            //             color: categories[transactionList[index].category],
+            //             fontSize: 20.0,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           "USD " + transactionList[index].amount.toString(),
+            //           style: TextStyle(
+            //             fontSize: 20.0,
+            //             fontWeight: FontWeight.bold,
+            //             color: transactionList[index].type == 0
+            //                 ? Colors.red
+            //                 : Colors.green,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //       ],
+            //     ),
+            //   ),
+            // );
           },
         ),
       ),
