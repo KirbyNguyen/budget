@@ -16,9 +16,9 @@ class _AllTransactionPageState extends State<AllTransactionPage> {
   List<ListItem> items = [
     DatedPurchaseItem(
       purchaseName: 'item 1',
-      amount: 123.00,
+      amount: 1231234.00,
       colorName: Colors.cyan,
-      date: 'March 9, 2021',
+      date: 'March 9, 20212222',
     ),
     DatedPurchaseItem(
       purchaseName: 'item 2',

@@ -1,6 +1,7 @@
 import 'package:budget/models/Account.dart';
 import 'package:budget/models/Transaction.dart';
-import 'package:budget/pages/transaction/TransactionDetailPage.dart';
+// import 'package:budget/pages/transaction/TransactionDetailPage.dart';
+import 'package:budget/pages/transaction/list_item.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,12 +75,31 @@ class _TransactionPageState extends State<TransactionPage> {
       }
     });
     print('TransactionPage->initState() ran ');
-    // getData();
+  }
+
+  void sortTransactionList() {
+    transactionList.sort((a, b) => b.date.compareTo(a.date));
+  }
+
+  List<ListItem> items = [];
+  List<ListItem> populateItems() {
+    return transactionList.map((transaction) {
+      return DetailedItem(
+        // need to save purchase name to DB to get it out
+        categoryName: transaction.category,
+        amount: transaction.amount,
+        catColor: categories[transaction.category],
+        date: transaction.date,
+        id: transaction.id,
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     getData();
+    sortTransactionList();
+    items = populateItems();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -119,62 +139,63 @@ class _TransactionPageState extends State<TransactionPage> {
       ),
       body: SafeArea(
         child: ListView.builder(
-          itemCount: transactionList.length,
+          itemCount: items.length,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TransactionDetailPage(
-                      transactionId: transactionList[index].id,
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color:
-                        Color(accounts[transactionList[index].accountid].color),
-                    width: 5.0,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                margin: EdgeInsets.all(15.0),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 5.0),
-                    Text(
-                      transactionList[index].date.toString().substring(0, 16),
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      transactionList[index].category,
-                      style: TextStyle(
-                        color: categories[transactionList[index].category],
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      "USD " + transactionList[index].amount.toString(),
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        color: transactionList[index].type == 0
-                            ? Colors.red
-                            : Colors.green,
-                      ),
-                    ),
-                    SizedBox(height: 5.0),
-                  ],
-                ),
-              ),
-            );
+            return items[index].buildItem(context);
+            // return GestureDetector(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => TransactionDetailPage(
+            //           transactionId: transactionList[index].id,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       border: Border.all(
+            //         color:
+            //             Color(accounts[transactionList[index].accountid].color),
+            //         width: 5.0,
+            //       ),
+            //       borderRadius: BorderRadius.circular(30),
+            //     ),
+            //     margin: EdgeInsets.all(15.0),
+            //     child: Column(
+            //       children: <Widget>[
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           transactionList[index].date.toString().substring(0, 16),
+            //           style: TextStyle(
+            //             fontSize: 18.0,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           transactionList[index].category,
+            //           style: TextStyle(
+            //             color: categories[transactionList[index].category],
+            //             fontSize: 20.0,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //         Text(
+            //           "USD " + transactionList[index].amount.toString(),
+            //           style: TextStyle(
+            //             fontSize: 20.0,
+            //             fontWeight: FontWeight.bold,
+            //             color: transactionList[index].type == 0
+            //                 ? Colors.red
+            //                 : Colors.green,
+            //           ),
+            //         ),
+            //         SizedBox(height: 5.0),
+            //       ],
+            //     ),
+            //   ),
+            // );
           },
         ),
       ),
