@@ -21,7 +21,7 @@ enum TransactionType { expense, income }
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
   TransactionDatabaseServices _transaction = TransactionDatabaseServices();
-  String purchase;
+  String note;
   double amount;
   // DateTime datetime;
   int currentCategory = 0;
@@ -403,15 +403,19 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: SizedBox(
                       height: 80.0,
                       child: TextFormField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.shopping_bag_outlined),
-                          // hintText: 'Purchase',
-                          border: OutlineInputBorder(),
-                          labelText: 'Purchase',
-                        ),
-                        textInputAction: TextInputAction.next,
-                        validator: (value) => validate(value),
-                      ),
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.shopping_bag_outlined),
+                            // hintText: 'Purchase',
+                            border: OutlineInputBorder(),
+                            labelText: 'Note',
+                          ),
+                          textInputAction: TextInputAction.next,
+                          validator: (value) => validate(value),
+                          onChanged: (value) {
+                            setState(() {
+                              note = value;
+                            });
+                          }),
                     ),
                   ),
                   Padding(
@@ -518,6 +522,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   currentAccount.id,
                                   _type,
                                   categories[currentCategory][0],
+                                  note,
                                   amount,
                                   _selectedDate,
                                   _time);

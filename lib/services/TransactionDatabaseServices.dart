@@ -19,6 +19,7 @@ class TransactionDatabaseServices {
       String accountid,
       TransactionType type,
       String categoryName,
+      String note,
       double amount,
       DateTime date,
       TimeOfDay time) async {
@@ -30,6 +31,7 @@ class TransactionDatabaseServices {
         'accountid': accountid,
         'type': type == TransactionType.expense ? 0 : 1,
         'categoryName': categoryName,
+        'note': note,
         'amount': amount,
         'datetime': dateTime,
       });
@@ -54,6 +56,7 @@ class TransactionDatabaseServices {
             type: document['type'],
             amount: document['amount'],
             category: document['categoryName'],
+            note: document['note'],
             date: document['datetime'].toDate(),
           );
           transactionList.add(temp);
@@ -78,6 +81,7 @@ class TransactionDatabaseServices {
         type: document['type'],
         amount: document['amount'],
         category: document['categoryName'],
+        note: document['note'],
         date: document['datetime'].toDate(),
       );
 
