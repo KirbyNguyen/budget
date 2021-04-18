@@ -92,6 +92,31 @@ class TransactionDatabaseServices {
     }
   }
 
+  Future<dynamic> editTransaction(
+      String id,
+      TransactionType type,
+      String categoryName,
+      String note,
+      double amount,
+      DateTime date,
+      TimeOfDay time) async {
+    DateTime dateTime = date.applied(time);
+    try {
+      DocumentReference document = transactionCollection.doc(id);
+
+      await document.update({
+        "type": type == TransactionType.expense ? 0 : 1,
+        "categoryName": categoryName,
+        "note": note,
+        "amount": amount,
+        "datetime": dateTime,
+      });
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   // Delete transaction
   Future<dynamic> deleteTransaction(String id) async {
     try {
