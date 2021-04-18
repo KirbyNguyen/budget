@@ -5,6 +5,7 @@ class UserTransaction {
   int type;
   double amount;
   String category;
+  String note;
   DateTime date;
 
   UserTransaction(
@@ -14,5 +15,6 @@ class UserTransaction {
       this.type,
       this.amount,
       this.category,
+      this.note,
       this.date});
 }
