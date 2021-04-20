@@ -19,6 +19,7 @@ class TransactionDatabaseServices {
       String accountid,
       TransactionType type,
       String categoryName,
+      String note,
       double amount,
       DateTime date,
       TimeOfDay time) async {
@@ -30,6 +31,7 @@ class TransactionDatabaseServices {
         'accountid': accountid,
         'type': type == TransactionType.expense ? 0 : 1,
         'categoryName': categoryName,
+        'note': note,
         'amount': amount,
         'datetime': dateTime,
       });
@@ -54,6 +56,7 @@ class TransactionDatabaseServices {
             type: document['type'],
             amount: document['amount'],
             category: document['categoryName'],
+            note: document['note'],
             date: document['datetime'].toDate(),
           );
           transactionList.add(temp);
@@ -78,10 +81,36 @@ class TransactionDatabaseServices {
         type: document['type'],
         amount: document['amount'],
         category: document['categoryName'],
+        note: document['note'],
         date: document['datetime'].toDate(),
       );
 
       return transaction;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  Future<dynamic> editTransaction(
+      String id,
+      TransactionType type,
+      String categoryName,
+      String note,
+      double amount,
+      DateTime date,
+      TimeOfDay time) async {
+    DateTime dateTime = date.applied(time);
+    try {
+      DocumentReference document = transactionCollection.doc(id);
+
+      await document.update({
+        "type": type == TransactionType.expense ? 0 : 1,
+        "categoryName": categoryName,
+        "note": note,
+        "amount": amount,
+        "datetime": dateTime,
+      });
     } catch (error) {
       print(error);
       return null;
