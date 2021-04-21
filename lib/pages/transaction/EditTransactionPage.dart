@@ -1,30 +1,49 @@
 import 'package:budget/models/Account.dart';
+import 'package:budget/models/Transaction.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'NewTransactionPage.dart';
 
-// Create a Form widget.
-class MyCustomForm extends StatefulWidget {
+class EditTransactionPage extends StatefulWidget {
+  final String transactionId;
+  final String accountId;
+  final String userId;
+  final DateTime existingTime;
+  final int type;
+
+  EditTransactionPage(
+      {this.transactionId,
+      this.accountId,
+      this.userId,
+      this.existingTime,
+      this.type});
+
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
+  _EditTransactionPageState createState() => _EditTransactionPageState();
 }
 
-enum TransactionType { expense, income }
+class _EditTransactionPageState extends State<EditTransactionPage> {
+  final TransactionDatabaseServices _transactionService =
+      TransactionDatabaseServices();
+  final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  TextEditingController _dateEditingController;
+  TextEditingController _timeEditingController;
 
-// Create a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  TransactionDatabaseServices _transaction = TransactionDatabaseServices();
-  String note;
-  double amount;
-  // DateTime datetime;
+  Account currentAccount;
+  UserTransaction currentTransaction;
+  List<Account> _accountList;
+
+  TransactionType _type;
   int currentCategory = 0;
+  DateTime _selectedDate;
+  TimeOfDay _time;
+  double _amount;
+
+  final _formKey = GlobalKey<FormState>();
+
   Map<int, List> categories = {
     0: ['Groceries', Colors.red],
     1: ['Gas', Colors.purple],
@@ -32,7 +51,41 @@ class MyCustomFormState extends State<MyCustomForm> {
     3: ['Take Outs', Colors.yellow],
   };
 
-  Container dropdown() {
+  // Find account from the list
+  Account findAccount() {
+    for (int i = 0; i < _accountList.length; i++) {
+      if (_accountList[i].id == widget.accountId) {
+        return _accountList[i];
+      }
+    }
+    return null;
+  }
+
+  // Retrieve the accounts related to the user
+  void getAccounts() async {
+    dynamic result = await _accountService.getAccounts(widget.userId);
+    if (result != null) {
+      setState(() {
+        _accountList = result;
+        // Get the current account
+        currentAccount = findAccount();
+      });
+    }
+  }
+
+  // Retrieve the current transaction
+  void getTransaction() async {
+    dynamic result =
+        await _transactionService.getTransaction(widget.transactionId);
+    if (result != null) {
+      setState(() {
+        currentTransaction = result;
+      });
+    }
+  }
+
+  // Category Dropdown Menu
+  Container categoryDropdown() {
     // DropdownButton<int> dropdown() {
     DropdownButton<int> button = DropdownButton<int>(
       isExpanded: true,
@@ -89,132 +142,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     return c;
   }
 
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-  // FocusScope.of(context).unfocus();
-
-  validate(String value) {
-    if (value.isEmpty) {
-      return 'Please enter some thing';
-    }
-    return null;
-  }
-
-  DateTime _selectedDate;
-  TextEditingController _dateEditingController;
-  TextEditingController _timeEditingController;
-  TransactionType _type = TransactionType.expense;
-
-  _selectDate(BuildContext context) async {
-    DateTime newSelectedDate = await showDatePicker(
-        context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2040),
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Colors.lightBlue[900],
-                onPrimary: Colors.lightBlue[400],
-                surface: Colors.red,
-                onSurface: Colors.lightBlue[900],
-              ),
-              dialogBackgroundColor: Colors.white,
-            ),
-            child: child,
-          );
-        });
-
-    if (newSelectedDate != null) {
-      _selectedDate = newSelectedDate;
-      _dateEditingController
-        ..text = DateFormat.yMMMd().format(_selectedDate)
-        ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _dateEditingController.text.length,
-            affinity: TextAffinity.upstream));
-    }
-  }
-
-  TimeOfDay _time = TimeOfDay(hour: 7, minute: 15);
-
-  void _selectTime(BuildContext context) async {
-    final TimeOfDay newTime = await showTimePicker(
-        context: context,
-        initialTime: _time,
-        initialEntryMode: TimePickerEntryMode.input,
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Colors.lightBlue[900],
-                onPrimary: Colors.white,
-                surface: Colors.white,
-                onSurface: Colors.lightBlue[900],
-              ),
-              dialogBackgroundColor: Colors.blue[500],
-            ),
-            child: child,
-          );
-        });
-    if (newTime != null) {
-      _time = newTime;
-      _timeEditingController
-        ..text = formatTimeOfDay(_time)
-        ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _timeEditingController.text.length,
-            affinity: TextAffinity.upstream));
-
-      // setState(() {
-      //   _time = newTime;
-      // });
-    }
-  }
-
-  String formatTimeOfDay(TimeOfDay tod) {
-    final now = new DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
-    final format = DateFormat.jm(); //"6:00 AM"
-    return format.format(dt);
-  }
-
-  setupDatetime() {
-    _dateEditingController = TextEditingController();
-    _selectedDate = DateTime.now();
-    _dateEditingController
-      ..text = DateFormat.yMMMd().format(_selectedDate)
-      ..selection = TextSelection.fromPosition(TextPosition(
-          offset: _dateEditingController.text.length,
-          affinity: TextAffinity.upstream));
-    _timeEditingController = TextEditingController();
-    _time = TimeOfDay.now();
-
-    _timeEditingController
-      ..text = formatTimeOfDay(_time)
-      ..selection = TextSelection.fromPosition(TextPosition(
-          offset: _timeEditingController.text.length,
-          affinity: TextAffinity.upstream));
-  }
-
-  // Retrieving account information
-  final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  Account currentAccount;
-  List<Account> _accountList;
-
-  Future<List<Account>> getAccounts() async {
-    User user = auth.currentUser;
-    dynamic result = await _accountService.getAccounts(user.uid);
-    setState(() {
-      _accountList = result;
-    });
-    return result;
-  }
-
+  // Account Dropdown Menu
   Container accountDropdown() {
     // DropdownButton<int> dropdown() {
     DropdownButton<Account> button = DropdownButton<Account>(
@@ -273,18 +201,119 @@ class MyCustomFormState extends State<MyCustomForm> {
     return c;
   }
 
+  // Date selecter
+  _selectDate(BuildContext context) async {
+    DateTime newSelectedDate = await showDatePicker(
+        context: context,
+        initialDate: widget.existingTime,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2040),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Colors.lightBlue[900],
+                onPrimary: Colors.lightBlue[400],
+                surface: Colors.red,
+                onSurface: Colors.lightBlue[900],
+              ),
+              dialogBackgroundColor: Colors.white,
+            ),
+            child: child,
+          );
+        });
+
+    if (newSelectedDate != null) {
+      _selectedDate = newSelectedDate;
+      _dateEditingController
+        ..text = DateFormat.yMMMd().format(_selectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _dateEditingController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
+
+  // Time selecter
+
+  _selectTime(BuildContext context) async {
+    final TimeOfDay newTime = await showTimePicker(
+        context: context,
+        initialTime: _time,
+        initialEntryMode: TimePickerEntryMode.input,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Colors.lightBlue[900],
+                onPrimary: Colors.white,
+                surface: Colors.white,
+                onSurface: Colors.lightBlue[900],
+              ),
+              dialogBackgroundColor: Colors.blue[500],
+            ),
+            child: child,
+          );
+        });
+    if (newTime != null) {
+      _time = newTime;
+      _timeEditingController
+        ..text = formatTimeOfDay(_time)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _timeEditingController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
+
+  String formatTimeOfDay(TimeOfDay tod) {
+    final now = new DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); //"6:00 AM"
+    return format.format(dt);
+  }
+
+  // Combine Date and Time
+  setupDatetime() {
+    _dateEditingController = TextEditingController();
+    _selectedDate = widget.existingTime;
+    _dateEditingController
+      ..text = DateFormat.yMMMd().format(_selectedDate)
+      ..selection = TextSelection.fromPosition(TextPosition(
+          offset: _dateEditingController.text.length,
+          affinity: TextAffinity.upstream));
+
+    _timeEditingController = TextEditingController();
+    _time = TimeOfDay(
+        hour: widget.existingTime.hour, minute: widget.existingTime.minute);
+
+    _timeEditingController
+      ..text = formatTimeOfDay(_time)
+      ..selection = TextSelection.fromPosition(TextPosition(
+          offset: _timeEditingController.text.length,
+          affinity: TextAffinity.upstream));
+  }
+
+  validate(String value) {
+    if (value.isEmpty) {
+      return 'Please enter some thing';
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
-    setupDatetime();
     SchedulerBinding.instance.addPostFrameCallback((_) => getAccounts());
+    SchedulerBinding.instance.addPostFrameCallback((_) => getTransaction());
+    setupDatetime();
+    setState(() {
+      _type =
+          widget.type == 0 ? TransactionType.expense : TransactionType.income;
+    });
+    // currentAccount = findAccount();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-
-    // Build a Form widget using the _formKey created above.
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
@@ -293,7 +322,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             Expanded(
               flex: 16,
               child: Text(
-                'Add New Transaction',
+                'Edit Transaction',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -301,13 +330,6 @@ class MyCustomFormState extends State<MyCustomForm> {
               flex: 3,
               child: Container(),
             ),
-            // Expanded(
-            //   flex: 5,
-            //   child: Text(
-            //     '50000000.00',
-            //     textAlign: TextAlign.right,
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -326,6 +348,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      // Radio button for expense
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -345,6 +368,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                           ),
                         ),
                       ),
+                      // Radio button for income
                       Expanded(
                         flex: 1,
                         child: Container(
@@ -375,7 +399,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       children: [
                         Expanded(
                           flex: 7,
-                          child: dropdown(),
+                          child: categoryDropdown(),
                         ),
                       ],
                     ),
@@ -408,11 +432,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                             border: OutlineInputBorder(),
                             labelText: 'Note',
                           ),
+                          initialValue: currentTransaction.note,
                           textInputAction: TextInputAction.next,
                           validator: (value) => validate(value),
                           onChanged: (value) {
                             setState(() {
-                              note = value;
+                              currentTransaction.note = value;
                             });
                           }),
                     ),
@@ -433,11 +458,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                           border: OutlineInputBorder(),
                           labelText: 'Amount',
                         ),
+                        initialValue: currentTransaction.amount.toString(),
                         validator: (value) {
                           try {
                             double val = double.parse(value);
                             assert(val is double);
-                            amount = val;
+                            setState(() {
+                              _amount = val;
+                            });
                           } on FormatException catch (e) {
                             print(e);
                             return "Must enter a number";
@@ -515,18 +543,32 @@ class MyCustomFormState extends State<MyCustomForm> {
                               // If the form is valid, display a Snackbar.
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Processing Data')));
-                              print(_selectedDate.toString());
-                              await _transaction.setTransaction(
-                                  user.uid,
-                                  currentAccount.id,
-                                  _type,
-                                  categories[currentCategory][0],
-                                  note,
-                                  amount,
-                                  _selectedDate,
-                                  _time);
+
+                              // If the current transaction was an expense,
+                              // add money to it
+                              // If it is an income, take money out of the account
+                              // *DOING OPPOSITE
                               await _accountService.editAccount(
-                                  currentAccount.id, amount, _type);
+                                  widget.accountId,
+                                  currentTransaction.amount,
+                                  currentTransaction.type == 0
+                                      ? TransactionType.income
+                                      : TransactionType.expense);
+
+                              await _transactionService.editTransaction(
+                                widget.transactionId,
+                                _type,
+                                categories[currentCategory][0],
+                                currentTransaction.note,
+                                _amount,
+                                _selectedDate,
+                                _time,
+                              );
+
+                              // Make sure the account do correctly
+                              await _accountService.editAccount(
+                                  widget.accountId, _amount, _type);
+
                               Navigator.pop(context);
                             }
                           },

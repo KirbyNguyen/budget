@@ -1,4 +1,5 @@
 import 'package:budget/models/Transaction.dart';
+import 'package:budget/pages/transaction/EditTransactionPage.dart';
 import 'package:budget/pages/transaction/NewTransactionPage.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
@@ -119,12 +120,23 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                 flex: 1,
                 child: Column(
                   children: <Widget>[
-                    Text(
-                      transaction.category,
-                      style: TextStyle(
-                        color: categories[transaction.category],
-                        fontSize: 20.0,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Category: ",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        Text(
+                          transaction.category,
+                          style: TextStyle(
+                            color: categories[transaction.category],
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 5.0,
@@ -148,6 +160,26 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                         fontSize: 20.0,
                       ),
                     ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Note: ",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                        ),
+                        Text(
+                          transaction.note,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -157,7 +189,20 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditTransactionPage(
+                              transactionId: transaction.id,
+                              accountId: transaction.accountid,
+                              userId: transaction.uid,
+                              existingTime: transaction.date,
+                              type: transaction.type,
+                            ),
+                          ),
+                        );
+                      },
                       child: Text("EDIT"),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.orange,
