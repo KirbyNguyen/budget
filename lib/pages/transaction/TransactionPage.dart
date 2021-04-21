@@ -71,7 +71,7 @@ class _TransactionPageState extends State<TransactionPage> {
     setState(() {
       for (int i = 0; i < transactionList.length; i++) {
         _totalSpending +=
-            transactionList[i].type == 0 ? transactionList[i].amount : 0;
+            (transactionList[i].type == 0 ? transactionList[i].amount : 0);
       }
     });
     print('TransactionPage->initState() ran ');
