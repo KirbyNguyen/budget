@@ -195,6 +195,7 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                             textInputAction: TextInputAction.next,
                             readOnly: true,
                             onTap: () {
+                              print("working");
                               _openDialog();
                             },
                           ),
@@ -225,6 +226,7 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                                   SnackBar(content: Text('Processing Data')));
                               await _category.addCategory(
                                   catName, catBudget, catColor.value);
+                              print("working");
                               Navigator.pop(context);
                             }
                           },
