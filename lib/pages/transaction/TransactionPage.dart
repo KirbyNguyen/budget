@@ -37,13 +37,28 @@ class _TransactionPageState extends State<TransactionPage> {
     'Work Lunches': Colors.blue,
     'Take Outs': Colors.yellow,
   };
-
   double _totalSpending = 0;
+  List<ListItem> items = [];
+
+  List<ListItem> populateItems() {
+    return transactionList.map((transaction) {
+      return DetailedItem(
+        // need to save purchase name to DB to get it out
+        categoryName: transaction.category,
+        amount: transaction.amount,
+        catColor: categories[transaction.category],
+        accountColor: Color(accounts[transaction.accountid].color),
+        type: transaction.type,
+        date: transaction.date,
+        id: transaction.id,
+      );
+    }).toList();
+  }
 
   // Get transaction data and put them in the list
   void getData() async {
     User user = auth.currentUser;
-
+    double totalSpending = 0;
     // Get transaction
     dynamic resultAccount = await _accountService.getAccounts(user.uid);
     if (resultAccount != null) {
@@ -62,39 +77,24 @@ class _TransactionPageState extends State<TransactionPage> {
         transactionList = resultTransaction;
       });
     }
+
+    for (int i = 0; i < transactionList.length; i++) {
+      totalSpending +=
+          (transactionList[i].type == 0 ? transactionList[i].amount : 0);
+    }
+    _totalSpending = totalSpending;
   }
 
   @override
   void initState() {
     super.initState();
     getData();
-    setState(() {
-      for (int i = 0; i < transactionList.length; i++) {
-        _totalSpending +=
-            transactionList[i].type == 0 ? transactionList[i].amount : 0;
-      }
-    });
+    // calculateTotalSpending();
     print('TransactionPage->initState() ran ');
   }
 
   void sortTransactionList() {
     transactionList.sort((a, b) => b.date.compareTo(a.date));
-  }
-
-  List<ListItem> items = [];
-  List<ListItem> populateItems() {
-    return transactionList.map((transaction) {
-      return DetailedItem(
-        // need to save purchase name to DB to get it out
-        categoryName: transaction.category,
-        amount: transaction.amount,
-        catColor: categories[transaction.category],
-        accountColor: Color(accounts[transaction.accountid].color),
-        type: transaction.type,
-        date: transaction.date,
-        id: transaction.id,
-      );
-    }).toList();
   }
 
   @override
@@ -117,7 +117,7 @@ class _TransactionPageState extends State<TransactionPage> {
             Expanded(
               flex: 5,
               child: Text(
-                _totalSpending.toString(),
+                _totalSpending.toStringAsFixed(2),
                 textAlign: TextAlign.right,
               ),
             ),
