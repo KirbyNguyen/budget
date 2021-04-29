@@ -26,17 +26,23 @@ class _BudgetPageState extends State<BudgetPage> {
   List<UserTransaction> transactionList = [];
   Map<String, Account> accounts = {};
   Map<String, List<UserTransaction>> categories = {};
+  List<String> categoriesList = [];
 
-  void getCategories() {
+  Future<void> getCategories() async {
+    await getData();
     String category;
     for (int i = 0; i < transactionList.length; i++) {
       category = transactionList[i].category;
+      if (categories[category] == null) {
+        categories[category] = [];
+        categoriesList.add(category);
+      }
       categories[category].add(transactionList[i]);
     }
   }
 
   // Get accounts and transaction data and put them in the list
-  void getData() async {
+  Future<void> getData() async {
     User user = auth.currentUser;
 
     // Get accounts
@@ -57,18 +63,18 @@ class _BudgetPageState extends State<BudgetPage> {
         transactionList = resultTransaction;
       });
     }
+    // print('TransactionList 1st item: ${transactionList[0]}');
+    // return 'success';        // if return type is Future<String>
   }
 
   @override
   void initState() {
     super.initState();
-    getData();
+    getCategories();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('from budget page->build');
-
     // print(
     //     transactions.doc(firebaseUser.uid).get().then((value) => print(value)));
     // var q = transactions.where(
@@ -87,11 +93,25 @@ class _BudgetPageState extends State<BudgetPage> {
     //     print(element.data());
     //   });
     // }));
-    print('done');
+
     return Scaffold(
-      body: Center(
-        child: Text("Budget Pageeee"),
-      ),
+      body: ListView.builder(
+          itemCount: categoriesList.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Card(
+                child: ListTile(
+                  // onTap: () { },
+                  title: Text(
+                    categoriesList[index],
+                  ),
+                  leading: CircleAvatar(),
+                  trailing: CircleAvatar(),
+                ),
+              ),
+            );
+          }),
     );
   }
 }
