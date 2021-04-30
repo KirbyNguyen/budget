@@ -12,7 +12,7 @@ class _CategoryPageState extends State<CategoryPage> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Text('Cateogry Page'),
+          child: Text('Category Page'),
         ),
       ),
     );
