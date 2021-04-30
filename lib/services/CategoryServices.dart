@@ -6,7 +6,7 @@ class CategoryServices {
       FirebaseFirestore.instance.collection('CATEGORIES');
 
   Future<void> addCategory(
-      String categoryName, int categoryBudget, Color colors) async {
+      String categoryName, double categoryBudget, int colors) async {
     try {
       return transactionCollection.doc().set({
         'categoryName': categoryName,
