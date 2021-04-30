@@ -1,7 +1,9 @@
+import 'package:budget/models/Category.dart';
 import 'package:budget/models/Transaction.dart';
 import 'package:budget/pages/transaction/EditTransactionPage.dart';
 import 'package:budget/pages/transaction/NewTransactionPage.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/CategoryServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
 import 'package:flutter/material.dart';
 
@@ -17,26 +19,38 @@ class TransactionDetailPage extends StatefulWidget {
 
 class _TransactionDetailPageState extends State<TransactionDetailPage> {
   UserTransaction transaction;
+  Category category;
   // Transaction information
   final TransactionDatabaseServices _transactionService =
       TransactionDatabaseServices();
   // Account service
   final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  // Category service
+  final CategoryServices _categoryService = CategoryServices();
 
-  Map<String, Color> categories = {
-    'Groceries': Colors.red,
-    'Gas': Colors.purple,
-    'Work Lunches': Colors.blue,
-    'Take Outs': Colors.yellow,
-  };
+  // Map<String, Color> categories = {
+  //   'Groceries': Colors.red,
+  //   'Gas': Colors.purple,
+  //   'Work Lunches': Colors.blue,
+  //   'Take Outs': Colors.yellow,
+  // };
 
   void getData() async {
-    dynamic result =
+    dynamic transactionResult =
         await _transactionService.getTransaction(widget.transactionId);
-    if (result != null) {
+    if (transactionResult != null) {
       setState(
         () {
-          transaction = result;
+          transaction = transactionResult;
+        },
+      );
+    }
+    dynamic categoryResult =
+        await _categoryService.getCategory(transaction.categoryid);
+    if (transactionResult != null) {
+      setState(
+        () {
+          category = categoryResult;
         },
       );
     }
@@ -130,9 +144,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                           ),
                         ),
                         Text(
-                          transaction.category,
+                          category.name,
                           style: TextStyle(
-                            color: categories[transaction.category],
+                            color: Color(category.colors),
                             fontSize: 20.0,
                           ),
                         ),

@@ -28,49 +28,49 @@ class _BudgetPageState extends State<BudgetPage> {
   Map<String, List<UserTransaction>> categories = {};
   List<String> categoriesList = [];
 
-  Future<void> getCategories() async {
-    await getData();
-    String category;
-    for (int i = 0; i < transactionList.length; i++) {
-      category = transactionList[i].category;
-      if (categories[category] == null) {
-        categories[category] = [];
-        categoriesList.add(category);
-      }
-      categories[category].add(transactionList[i]);
-    }
-  }
+  // Future<void> getCategories() async {
+  //   await getData();
+  //   String category;
+  //   for (int i = 0; i < transactionList.length; i++) {
+  //     category = transactionList[i].category;
+  //     if (categories[category] == null) {
+  //       categories[category] = [];
+  //       categoriesList.add(category);
+  //     }
+  //     categories[category].add(transactionList[i]);
+  //   }
+  // }
 
-  // Get accounts and transaction data and put them in the list
-  Future<void> getData() async {
-    User user = auth.currentUser;
+  // // Get accounts and transaction data and put them in the list
+  // Future<void> getData() async {
+  //   User user = auth.currentUser;
 
-    // Get accounts
-    dynamic resultAccount = await _accountService.getAccounts(user.uid);
-    if (resultAccount != null) {
-      setState(() {
-        for (int i = 0; i < resultAccount.length; i++) {
-          accounts[resultAccount[i].id] = resultAccount[i];
-        }
-      });
-    }
+  //   // Get accounts
+  //   dynamic resultAccount = await _accountService.getAccounts(user.uid);
+  //   if (resultAccount != null) {
+  //     setState(() {
+  //       for (int i = 0; i < resultAccount.length; i++) {
+  //         accounts[resultAccount[i].id] = resultAccount[i];
+  //       }
+  //     });
+  //   }
 
-    // Get transactions
-    dynamic resultTransaction =
-        await _transactionService.getTransactions(user.uid);
-    if (resultTransaction != null) {
-      setState(() {
-        transactionList = resultTransaction;
-      });
-    }
-    // print('TransactionList 1st item: ${transactionList[0]}');
-    // return 'success';        // if return type is Future<String>
-  }
+  //   // Get transactions
+  //   dynamic resultTransaction =
+  //       await _transactionService.getTransactions(user.uid);
+  //   if (resultTransaction != null) {
+  //     setState(() {
+  //       transactionList = resultTransaction;
+  //     });
+  //   }
+  //   // print('TransactionList 1st item: ${transactionList[0]}');
+  //   // return 'success';        // if return type is Future<String>
+  // }
 
   @override
   void initState() {
     super.initState();
-    getCategories();
+    // getCategories();
   }
 
   @override

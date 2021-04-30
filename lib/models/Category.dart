@@ -5,5 +5,5 @@ class Category {
   double budget;
   int colors;
 
-  Category({this.uid, this.name, this.budget, this.colors});
+  Category({this.id, this.uid, this.name, this.budget, this.colors});
 }
