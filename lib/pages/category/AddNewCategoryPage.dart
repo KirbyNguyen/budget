@@ -10,7 +10,7 @@ class AddNewCategoryPage extends StatefulWidget {
 class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
   CategoryServices _category = CategoryServices();
   String catName;
-  int catBudget = 0;
+  double catBudget = 0;
   Color catColor;
   final _formKey = GlobalKey<FormState>();
   final List<Color> _defaultColors = [
@@ -70,67 +70,11 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                   ),
                 )
                 .toList(),
-            // children: <Widget>[
-            //   SimpleDialogOption(
-            //     onPressed: () {
-            //       Navigator.pop(context, Movies.CaptainMarvel);
-            //     },
-            //     child: const Text("Captain Marvel"),
-            //   ),
-            //   SimpleDialogOption(
-            //     onPressed: () {
-            //       Navigator.pop(context, Movies.Shazam);
-            //     },
-            //     child: const Text("Shazam"),
-            //   ),
-            // ],
           );
         });
     setState(() {
       _color = newColor;
     });
-    // switch (await showDialog(
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return SimpleDialog(
-    //         title: const Text("Select a Color"),
-    //         children: _defaultColors
-    //             .map(
-    //               (color) => SimpleDialogOption(
-    //                 child: Icon(
-    //                   Icons.circle,
-    //                   color: color,
-    //                 ),
-    //                 onPressed: () {
-    //                   Navigator.pop(context, color);
-    //                 },
-    //               ),
-    //             )
-    //             .toList(),
-    //         // children: <Widget>[
-    //         //   SimpleDialogOption(
-    //         //     onPressed: () {
-    //         //       Navigator.pop(context, Movies.CaptainMarvel);
-    //         //     },
-    //         //     child: const Text("Captain Marvel"),
-    //         //   ),
-    //         //   SimpleDialogOption(
-    //         //     onPressed: () {
-    //         //       Navigator.pop(context, Movies.Shazam);
-    //         //     },
-    //         //     child: const Text("Shazam"),
-    //         //   ),
-    //         // ],
-    //       );
-    //     })) {
-
-    //   // case Movies.CaptainMarvel:
-    //   //   print("Captain Marvel selected");
-    //   //   break;
-    //   // case Movies.Shazam:
-    //   //   print("Shazam selected");
-    //   //   break;
-    // }
   }
 
   @override
@@ -185,6 +129,11 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                           border: OutlineInputBorder(),
                           labelText: 'New Category',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            catName = value;
+                          });
+                        },
                         textInputAction: TextInputAction.next,
                         validator: (value) => validate(value),
                       ),
@@ -206,18 +155,12 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                           border: OutlineInputBorder(),
                           labelText: 'Budget Amount',
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            catBudget = double.parse(value);
+                          });
+                        },
                         textInputAction: TextInputAction.next,
-                        // validator: (value) {
-                        //   try {
-                        //     double val = double.parse(value);
-                        //     assert(val is double);
-                        //     // amount = val;
-                        //   } on FormatException catch (e) {
-                        //     print(e);
-                        //     return "Must enter a number";
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                   ),
@@ -252,37 +195,11 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                             textInputAction: TextInputAction.next,
                             readOnly: true,
                             onTap: () {
+                              print("working");
                               _openDialog();
                             },
-                            // onTap: () {
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (_) => AlertDialog(
-                            //     title: Text('hello'),
-                            //   ),
-                            // );
-                            // _selectDate(context);
-                            // },
                           ),
                         ),
-                        // SizedBox(width: 10.0),
-                        // Expanded(
-                        //   child: TextField(
-                        //     // controller: _timeEditingController,
-                        //     decoration: InputDecoration(
-                        //       border: OutlineInputBorder(),
-                        //       labelText: 'Time',
-                        //       suffixIcon: Icon(
-                        //         Icons.arrow_drop_down,
-                        //       ),
-                        //     ),
-                        //     textInputAction: TextInputAction.next,
-                        //     readOnly: true,
-                        //     onTap: () {
-                        //       // _selectTime(context);
-                        //     },
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
@@ -308,10 +225,8 @@ class _AddNewCategoryPageState extends State<AddNewCategoryPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Processing Data')));
                               await _category.addCategory(
-                                  catName, catBudget, catColor);
-                              //     amount,
-                              //     _selectedDate,
-                              //     _time);
+                                  catName, catBudget, catColor.value);
+                              print("working");
                               Navigator.pop(context);
                             }
                           },
