@@ -2,9 +2,9 @@ class UserTransaction {
   String accountid;
   String uid;
   String id;
+  String categoryid;
   int type;
   double amount;
-  String category;
   String note;
   DateTime date;
 
@@ -12,9 +12,9 @@ class UserTransaction {
       {this.accountid,
       this.uid,
       this.id,
+      this.categoryid,
       this.type,
       this.amount,
-      this.category,
       this.note,
       this.date});
 }

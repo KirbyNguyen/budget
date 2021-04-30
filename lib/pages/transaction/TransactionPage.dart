@@ -1,15 +1,13 @@
 import 'package:budget/models/Account.dart';
+import 'package:budget/models/Category.dart';
 import 'package:budget/models/Transaction.dart';
-// import 'package:budget/pages/transaction/TransactionDetailPage.dart';
 import 'package:budget/pages/transaction/list_item.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/CategoryServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'NewTransactionPage.dart';
-// import 'list_item.dart';
-// import 'package:budget/pages/accounts/AccountPage.dart';
-// import 'package:budget/pages/transaction/AllTransactionPage.dart';
 
 class TransactionPage extends StatefulWidget {
   @override
@@ -22,7 +20,6 @@ class _TransactionPageState extends State<TransactionPage> {
 // 2 types of ListItem: DateItem(String date) for the date category
 //                      PurchaseItem(String name, Double amount, Color color)
 // also get the sum of all spending this month
-  List<UserTransaction> transactionList = [];
   // Authentication service
   final FirebaseAuth auth = FirebaseAuth.instance;
   // Transaction information
@@ -30,13 +27,13 @@ class _TransactionPageState extends State<TransactionPage> {
       TransactionDatabaseServices();
   // Account service
   final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  // Category service
+  final CategoryServices _categoryService = CategoryServices();
+
+  List<UserTransaction> transactionList = [];
   Map<String, Account> accounts = {};
-  Map<String, Color> categories = {
-    'Groceries': Colors.red,
-    'Gas': Colors.purple,
-    'Work Lunches': Colors.blue,
-    'Take Outs': Colors.yellow,
-  };
+  Map<String, Category> categories = {};
+
   double _totalSpending = 0;
   List<ListItem> items = [];
 
@@ -44,9 +41,9 @@ class _TransactionPageState extends State<TransactionPage> {
     return transactionList.map((transaction) {
       return DetailedItem(
         // need to save purchase name to DB to get it out
-        categoryName: transaction.category,
+        categoryName: categories[transaction.categoryid].name,
         amount: transaction.amount,
-        catColor: categories[transaction.category],
+        catColor: Color(categories[transaction.categoryid].colors),
         accountColor: Color(accounts[transaction.accountid].color),
         type: transaction.type,
         date: transaction.date,
@@ -67,6 +64,15 @@ class _TransactionPageState extends State<TransactionPage> {
           accounts[resultAccount[i].id] = resultAccount[i];
         }
       });
+
+      dynamic resultCategory = await _categoryService.getCategories(user.uid);
+      if (resultCategory != null) {
+        setState(() {
+          for (int i = 0; i < resultCategory.length; i++) {
+            categories[resultCategory[i].id] = resultCategory[i];
+          }
+        });
+      }
     }
 
     // Get account

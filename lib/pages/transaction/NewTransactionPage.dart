@@ -1,5 +1,7 @@
 import 'package:budget/models/Account.dart';
+import 'package:budget/models/Category.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/CategoryServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,82 +22,12 @@ enum TransactionType { expense, income }
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   TransactionDatabaseServices _transaction = TransactionDatabaseServices();
   String note;
   double amount;
-  // DateTime datetime;
-  int currentCategory = 0;
-  Map<int, List> categories = {
-    0: ['Groceries', Colors.red],
-    1: ['Gas', Colors.purple],
-    2: ['Work Lunches', Colors.blue],
-    3: ['Take Outs', Colors.yellow],
-  };
 
-  Container dropdown() {
-    // DropdownButton<int> dropdown() {
-    DropdownButton<int> button = DropdownButton<int>(
-      isExpanded: true,
-      value: currentCategory,
-      icon: const Icon(Icons.arrow_drop_down),
-      iconSize: 24,
-      elevation: 16,
-      style: const TextStyle(
-        // color: Colors.red,
-        // color: Colors.deepPurple,
-        color: Colors.black,
-      ),
-      underline: SizedBox(), //(
-      //   height: 1,
-      //   color: Colors.grey[400],
-      // ),
-      onChanged: (int newValue) {
-        setState(() {
-          currentCategory = newValue;
-        });
-      },
-      items: categories.keys.toList().map<DropdownMenuItem<int>>((int value) {
-        return DropdownMenuItem<int>(
-          value: value,
-          child: Row(
-            children: [
-              SizedBox(
-                width: 19.0,
-              ),
-              Icon(
-                Icons.circle,
-                size: 15.0,
-                color: categories[value][1],
-              ),
-              SizedBox(
-                width: 10.0,
-              ),
-              Text(categories[value][0]),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-    Container c = Container(
-        child: button,
-        height: 50.0,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey[500],
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-        ));
-    return c;
-  }
-
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  // FocusScope.of(context).unfocus();
 
   validate(String value) {
     if (value.isEmpty) {
@@ -202,9 +134,8 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   // Retrieving account information
   final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  List<Account> _accountList = [];
   Account currentAccount;
-  List<Account> _accountList;
 
   Future<List<Account>> getAccounts() async {
     User user = auth.currentUser;
@@ -224,14 +155,9 @@ class MyCustomFormState extends State<MyCustomForm> {
       iconSize: 24,
       elevation: 16,
       style: const TextStyle(
-        // color: Colors.red,
-        // color: Colors.deepPurple,
         color: Colors.black,
       ),
       underline: SizedBox(), //(
-      //   height: 1,
-      //   color: Colors.grey[400],
-      // ),
       onChanged: (Account newValue) {
         setState(() {
           currentAccount = newValue;
@@ -273,11 +199,81 @@ class MyCustomFormState extends State<MyCustomForm> {
     return c;
   }
 
+  // Category service
+  final CategoryServices _categoryService = CategoryServices();
+  List<Category> _categoryList = [];
+  Category currentCategory;
+
+  Future<List<Category>> getCategories() async {
+    User user = auth.currentUser;
+    dynamic result = await _categoryService.getCategories(user.uid);
+    setState(() {
+      _categoryList = result;
+    });
+    print(_categoryList[0].id);
+    return result;
+  }
+
+  Container categoryDropdown() {
+    // DropdownButton<int> dropdown() {
+    DropdownButton<Category> button = DropdownButton<Category>(
+      isExpanded: true,
+      value: currentCategory,
+      icon: const Icon(Icons.arrow_drop_down),
+      iconSize: 24,
+      elevation: 16,
+      style: const TextStyle(
+        color: Colors.black,
+      ),
+      underline: SizedBox(), //(
+      onChanged: (Category newValue) {
+        setState(() {
+          currentCategory = newValue;
+        });
+      },
+      items: _categoryList
+          .toList()
+          .map<DropdownMenuItem<Category>>((Category value) {
+        return DropdownMenuItem<Category>(
+          value: value,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 19.0,
+              ),
+              Icon(
+                Icons.circle,
+                size: 15.0,
+                color: Color(value.colors),
+              ),
+              SizedBox(
+                width: 10.0,
+              ),
+              Text(value.name),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+    Container c = Container(
+        child: button,
+        height: 50.0,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey[500],
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ));
+    return c;
+  }
+
   @override
   void initState() {
     super.initState();
     setupDatetime();
     SchedulerBinding.instance.addPostFrameCallback((_) => getAccounts());
+    SchedulerBinding.instance.addPostFrameCallback((_) => getCategories());
   }
 
   @override
@@ -301,13 +297,6 @@ class MyCustomFormState extends State<MyCustomForm> {
               flex: 3,
               child: Container(),
             ),
-            // Expanded(
-            //   flex: 5,
-            //   child: Text(
-            //     '50000000.00',
-            //     textAlign: TextAlign.right,
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -375,7 +364,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       children: [
                         Expanded(
                           flex: 7,
-                          child: dropdown(),
+                          child: categoryDropdown(),
                         ),
                       ],
                     ),
@@ -404,7 +393,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                       child: TextFormField(
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.shopping_bag_outlined),
-                            // hintText: 'Purchase',
                             border: OutlineInputBorder(),
                             labelText: 'Note',
                           ),
@@ -458,8 +446,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                           child: TextField(
                             controller: _dateEditingController,
                             decoration: InputDecoration(
-                              // hintText: DateFormat('MM-dd-yyyy')
-                              //     .format(_selectedDate),
                               border: OutlineInputBorder(),
                               labelText: 'Date',
                               suffixIcon: Icon(
@@ -519,8 +505,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                               await _transaction.setTransaction(
                                   user.uid,
                                   currentAccount.id,
+                                  currentCategory.id,
                                   _type,
-                                  categories[currentCategory][0],
                                   note,
                                   amount,
                                   _selectedDate,

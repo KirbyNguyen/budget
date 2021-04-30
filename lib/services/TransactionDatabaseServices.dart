@@ -17,8 +17,8 @@ class TransactionDatabaseServices {
   Future<void> setTransaction(
       String uid,
       String accountid,
+      String categoryid,
       TransactionType type,
-      String categoryName,
       String note,
       double amount,
       DateTime date,
@@ -29,8 +29,8 @@ class TransactionDatabaseServices {
       return transactionCollection.doc().set({
         'uid': uid,
         'accountid': accountid,
+        'categoryid': categoryid,
         'type': type == TransactionType.expense ? 0 : 1,
-        'categoryName': categoryName,
         'note': note,
         'amount': amount,
         'datetime': dateTime,
@@ -50,12 +50,12 @@ class TransactionDatabaseServices {
       eventsQuery.docs.forEach(
         (document) {
           UserTransaction temp = new UserTransaction(
-            accountid: document['accountid'],
             uid: document['uid'],
             id: document.id,
+            accountid: document['accountid'],
+            categoryid: document['categoryid'],
             type: document['type'],
             amount: document['amount'],
-            category: document['categoryName'],
             note: document['note'],
             date: document['datetime'].toDate(),
           );
@@ -75,12 +75,12 @@ class TransactionDatabaseServices {
       DocumentSnapshot document = await transactionCollection.doc(id).get();
 
       UserTransaction transaction = new UserTransaction(
-        accountid: document['accountid'],
         uid: document['uid'],
         id: document.id,
+        accountid: document['accountid'],
+        categoryid: document['categoryid'],
         type: document['type'],
         amount: document['amount'],
-        category: document['categoryName'],
         note: document['note'],
         date: document['datetime'].toDate(),
       );
@@ -95,7 +95,7 @@ class TransactionDatabaseServices {
   Future<dynamic> editTransaction(
       String id,
       TransactionType type,
-      String categoryName,
+      String categoryId,
       String note,
       double amount,
       DateTime date,
@@ -106,7 +106,7 @@ class TransactionDatabaseServices {
 
       await document.update({
         "type": type == TransactionType.expense ? 0 : 1,
-        "categoryName": categoryName,
+        "categoryid": categoryId,
         "note": note,
         "amount": amount,
         "datetime": dateTime,

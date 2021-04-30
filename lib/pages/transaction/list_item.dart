@@ -231,7 +231,7 @@ class DetailedItem implements ListItem {
           context,
           MaterialPageRoute(
             builder: (context) => TransactionDetailPage(
-              transactionId: id,
+              transactionId: id
             ),
           ),
         );
