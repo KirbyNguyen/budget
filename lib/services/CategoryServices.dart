@@ -5,14 +5,14 @@ import 'package:budget/models/Category.dart';
 
 class CategoryServices {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final CollectionReference transactionCollection =
+  final CollectionReference categoryCollection =
       FirebaseFirestore.instance.collection('CATEGORIES');
 
   Future<void> addCategory(
       String categoryName, double categoryBudget, int colors) async {
     User user = auth.currentUser;
     try {
-      return transactionCollection.doc().set({
+      return categoryCollection.doc().set({
         'categoryName': categoryName,
         'categoryBudget': categoryBudget,
         'Colors': colors,
@@ -29,7 +29,7 @@ class CategoryServices {
     List<Category> categoryList = [];
     try {
       QuerySnapshot eventsQuery =
-          await transactionCollection.where("uid", isEqualTo: uid).get();
+          await categoryCollection.where("uid", isEqualTo: uid).get();
       eventsQuery.docs.forEach(
         (document) {
           Category temp = new Category(
@@ -48,18 +48,45 @@ class CategoryServices {
   }
 
   // Retrieve transaction
-  Future<dynamic> getTransaction(String id) async {
+  Future<dynamic> getCategory(String id) async {
     try {
-      DocumentSnapshot document = await transactionCollection.doc(id).get();
+      DocumentSnapshot document = await categoryCollection.doc(id).get();
 
-      Category transaction = new Category(
+      Category category = new Category(
         name: document['categoryName'],
         budget: document['categoryBudget'],
         uid: document['userid'],
         colors: document['Colors'],
       );
 
-      return transaction;
+      return category;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  Future<dynamic> editCategory(
+      String id, String name, double budget, int colors) async {
+    try {
+      DocumentReference document = categoryCollection.doc(id);
+
+      await document.update({
+        "categoryName": name,
+        "Colors": colors,
+        "budget": budget,
+      });
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
+  // Delete category
+  // changes made
+  Future<dynamic> deleteCategory(String id) async {
+    try {
+      await categoryCollection.doc(id).delete();
     } catch (error) {
       print(error);
       return null;
