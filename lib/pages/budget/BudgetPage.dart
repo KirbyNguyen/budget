@@ -1,8 +1,10 @@
 import 'package:budget/models/Account.dart';
+import 'package:budget/models/Category.dart';
 import 'package:budget/models/Transaction.dart';
+import 'package:budget/pages/budget/BudgetDetailsPage.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
+import 'package:budget/services/CategoryServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +14,6 @@ class BudgetPage extends StatefulWidget {
 }
 
 class _BudgetPageState extends State<BudgetPage> {
-  // FirebaseFirestore firestore = FirebaseFirestore.instance;
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-  CollectionReference transactions =
-      FirebaseFirestore.instance.collection('transactions');
   // Authentication service
   final FirebaseAuth auth = FirebaseAuth.instance;
   // Transaction information
@@ -23,10 +21,13 @@ class _BudgetPageState extends State<BudgetPage> {
       TransactionDatabaseServices();
   // Account service
   final AccountDatabaseSerivces _accountService = AccountDatabaseSerivces();
+  // Category service
+  final CategoryServices _categoryService = CategoryServices();
+
   List<UserTransaction> transactionList = [];
+  List<Category> categoryList = [];
   Map<String, Account> accounts = {};
-  Map<String, List<UserTransaction>> categories = {};
-  List<String> categoriesList = [];
+  Map<String, Category> categories = {};
 
   // Future<void> getCategories() async {
   //   await getData();
@@ -67,47 +68,74 @@ class _BudgetPageState extends State<BudgetPage> {
   //   // return 'success';        // if return type is Future<String>
   // }
 
+  Future<void> getData() async {
+    User user = auth.currentUser;
+    // Get accounts
+    dynamic resultAccount = await _accountService.getAccounts(user.uid);
+    if (resultAccount != null) {
+      setState(() {
+        for (int i = 0; i < resultAccount.length; i++) {
+          accounts[resultAccount[i].id] = resultAccount[i];
+        }
+      });
+    }
+
+    dynamic resultCategory = await _categoryService.getCategories(user.uid);
+    if (resultCategory != null) {
+      setState(() {
+        categoryList = resultCategory;
+        for (int i = 0; i < resultCategory.length; i++) {
+          categories[resultCategory[i].id] = resultCategory[i];
+        }
+      });
+    }
+
+    // Get account
+    dynamic resultTransaction =
+        await _transactionService.getTransactions(user.uid);
+    if (resultTransaction != null) {
+      setState(() {
+        transactionList = resultTransaction;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    // getCategories();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(
-    //     transactions.doc(firebaseUser.uid).get().then((value) => print(value)));
-    // var q = transactions.where(
-    //   'uid',
-    //   isEqualTo: firebaseUser.uid,
-    // );
-    // print(firebaseUser.email);
-    // print(transactions
-    //     .where(
-    //       'uid',
-    //       isEqualTo: firebaseUser.uid,
-    //     )
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     print(element.data());
-    //   });
-    // }));
-
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue[900],
+        title: Text("Budget"),
+      ),
       body: ListView.builder(
-          itemCount: categoriesList.length,
+          itemCount: categoryList.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(10.0),
               child: Card(
                 child: ListTile(
-                  // onTap: () { },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BudgetDetailsPage(
+                          category: categoryList[index],
+                        ),
+                      ),
+                    );
+                  },
                   title: Text(
-                    categoriesList[index],
+                    categoryList[index].name,
                   ),
-                  leading: CircleAvatar(),
-                  trailing: CircleAvatar(),
+                  leading: CircleAvatar(
+                    backgroundColor: Color(categoryList[index].colors),
+                  ),
                 ),
               ),
             );

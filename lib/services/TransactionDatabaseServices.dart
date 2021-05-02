@@ -92,6 +92,35 @@ class TransactionDatabaseServices {
     }
   }
 
+  // Retrieve transaction
+  Future<dynamic> getTransactionsByCategory(String id) async {
+    List<UserTransaction> transactionList = [];
+    try {
+      QuerySnapshot eventsQuery =
+          await transactionCollection.where("categoryid", isEqualTo: id).get();
+
+      eventsQuery.docs.forEach(
+        (document) {
+          UserTransaction temp = new UserTransaction(
+            uid: document['uid'],
+            id: document.id,
+            accountid: document['accountid'],
+            categoryid: document['categoryid'],
+            type: document['type'],
+            amount: document['amount'],
+            note: document['note'],
+            date: document['datetime'].toDate(),
+          );
+          transactionList.add(temp);
+        },
+      );
+      return transactionList;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
+
   Future<dynamic> editTransaction(
       String id,
       TransactionType type,
