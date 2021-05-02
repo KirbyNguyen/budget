@@ -56,7 +56,7 @@ class _TransactionPageState extends State<TransactionPage> {
   void getData() async {
     User user = auth.currentUser;
     double totalSpending = 0;
-    // Get transaction
+    // Get accounts
     dynamic resultAccount = await _accountService.getAccounts(user.uid);
     if (resultAccount != null) {
       setState(() {
@@ -64,8 +64,10 @@ class _TransactionPageState extends State<TransactionPage> {
           accounts[resultAccount[i].id] = resultAccount[i];
         }
       });
+    }
 
-      dynamic resultCategory = await _categoryService.getCategories(user.uid);
+    // Get categories
+    dynamic resultCategory = await _categoryService.getCategories(user.uid);
       if (resultCategory != null) {
         setState(() {
           for (int i = 0; i < resultCategory.length; i++) {
@@ -73,9 +75,8 @@ class _TransactionPageState extends State<TransactionPage> {
           }
         });
       }
-    }
 
-    // Get account
+    // Get transactions
     dynamic resultTransaction =
         await _transactionService.getTransactions(user.uid);
     if (resultTransaction != null) {
@@ -95,8 +96,6 @@ class _TransactionPageState extends State<TransactionPage> {
   void initState() {
     super.initState();
     getData();
-    // calculateTotalSpending();
-    print('TransactionPage->initState() ran ');
   }
 
   void sortTransactionList() {
