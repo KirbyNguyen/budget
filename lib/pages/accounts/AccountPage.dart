@@ -36,6 +36,8 @@ class _AccountsPageState extends State<AccountsPage> {
 
   @override
   Widget build(BuildContext context) {
+    getAccounts();
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Accounts"),
