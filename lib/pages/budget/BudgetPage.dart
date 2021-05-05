@@ -2,6 +2,7 @@ import 'package:budget/models/Account.dart';
 import 'package:budget/models/Category.dart';
 import 'package:budget/models/Transaction.dart';
 import 'package:budget/pages/budget/BudgetDetailsPage.dart';
+import 'package:budget/pages/category/AddNewCategoryPage.dart';
 import 'package:budget/services/AccountDatabaseServices.dart';
 import 'package:budget/services/CategoryServices.dart';
 import 'package:budget/services/TransactionDatabaseServices.dart';
@@ -28,45 +29,6 @@ class _BudgetPageState extends State<BudgetPage> {
   List<Category> categoryList = [];
   Map<String, Account> accounts = {};
   Map<String, Category> categories = {};
-
-  // Future<void> getCategories() async {
-  //   await getData();
-  //   String category;
-  //   for (int i = 0; i < transactionList.length; i++) {
-  //     category = transactionList[i].category;
-  //     if (categories[category] == null) {
-  //       categories[category] = [];
-  //       categoriesList.add(category);
-  //     }
-  //     categories[category].add(transactionList[i]);
-  //   }
-  // }
-
-  // // Get accounts and transaction data and put them in the list
-  // Future<void> getData() async {
-  //   User user = auth.currentUser;
-
-  //   // Get accounts
-  //   dynamic resultAccount = await _accountService.getAccounts(user.uid);
-  //   if (resultAccount != null) {
-  //     setState(() {
-  //       for (int i = 0; i < resultAccount.length; i++) {
-  //         accounts[resultAccount[i].id] = resultAccount[i];
-  //       }
-  //     });
-  //   }
-
-  //   // Get transactions
-  //   dynamic resultTransaction =
-  //       await _transactionService.getTransactions(user.uid);
-  //   if (resultTransaction != null) {
-  //     setState(() {
-  //       transactionList = resultTransaction;
-  //     });
-  //   }
-  //   // print('TransactionList 1st item: ${transactionList[0]}');
-  //   // return 'success';        // if return type is Future<String>
-  // }
 
   Future<void> getData() async {
     User user = auth.currentUser;
@@ -108,10 +70,27 @@ class _BudgetPageState extends State<BudgetPage> {
 
   @override
   Widget build(BuildContext context) {
+    getData();
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[900],
         title: Text("Budget"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.lightBlue[900],
+        child: Container(
+          child: Icon(
+            Icons.add,
+            size: 40.0,
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNewCategoryPage()),
+          );
+        },
       ),
       body: ListView.builder(
           itemCount: categoryList.length,

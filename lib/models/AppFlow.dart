@@ -1,7 +1,6 @@
 import 'package:budget/pages/budget/BudgetPage.dart';
 import 'package:budget/pages/menu/MenuPage.dart';
 import 'package:budget/pages/transaction/TransactionPage.dart';
-import 'package:budget/pages/category/AddNewCategoryPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -34,12 +33,6 @@ final List<AppFlow> appFlows = [
     title: 'Budget',
     iconData: Icons.assessment,
     page: BudgetPage(),
-    navigatorKey: GlobalKey<NavigatorState>(),
-  ),
-  AppFlow(
-    title: 'Add Category',
-    iconData: Icons.category,
-    page: AddNewCategoryPage(),
     navigatorKey: GlobalKey<NavigatorState>(),
   ),
   AppFlow(

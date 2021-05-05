@@ -21,9 +21,16 @@ class _MenuPageState extends State<MenuPage> {
     // Getting user's id
     final user = Provider.of<User>(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.lightBlue[900],
+        title: Text("Menu"),
+      ),
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 15.0),
+          margin: EdgeInsets.symmetric(
+            horizontal: 15.0,
+            vertical: 20.0,
+          ),
           child: Column(
             children: <Widget>[
               Align(
